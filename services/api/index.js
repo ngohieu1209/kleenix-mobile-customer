@@ -1,0 +1,6 @@
+export { default as extraServiceApi } from './extra-service';
+export { default as serviceApi } from './service';
+export { default as userApi } from './user';
+export { default as addressApi } from './address';
+export { default as authApi } from './auth';
+export { default as bookingApi } from './booking';
