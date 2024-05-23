@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { REACT_APP_BASE_ICON_URL } from '@env'
 
-import { useLocalSearchParams } from 'expo-router'
-
+import { useLocalSearchParams, router } from 'expo-router'
+import _ from 'lodash'
+import { setHours, setMinutes, setSeconds } from 'date-fns';
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import BackButtonHeader from '../../components/BackButtonHeader'
@@ -12,18 +13,21 @@ import FieldDateTimePicker from '../../components/FieldDateTimePicker'
 import OrderModal from '../../components/OrderModal'
 
 import useFetchData from '../../services/useFetchData'
-import { serviceApi, extraServiceApi, addressApi } from '../../services/api'
+import { serviceApi, extraServiceApi, addressApi, bookingApi } from '../../services/api'
 import { useGlobalContext } from '../../context/GlobalProvider'
 import { icons } from '../../constants'
 import { fCurrency } from '../../utils/format-currency'
 import { fMinutesToHours } from '../../utils/format-time'
+import LoadingScreen from '../../components/LoadingScreen'
+
 
 const Service = () => {
   const iconBaseURL = `${REACT_APP_BASE_ICON_URL}`
   const { id: serviceId } = useLocalSearchParams()
-  const { data: service } = useFetchData(serviceApi.getListPackage(serviceId));
-  const { data: extraServices } = useFetchData(extraServiceApi.getListExtraService());
-  const { data: listAddress } = useFetchData(addressApi.getListAddress());
+  const [isLoading, setIsLoading] = useState(false)
+  const { data: service, isLoading: loadingService } = useFetchData(serviceApi.getListPackage(serviceId));
+  const { data: extraServices, isLoading: loadingExtraService } = useFetchData(extraServiceApi.getListExtraService());
+  const { data: listAddress, isLoading: loadingAddress } = useFetchData(addressApi.getListAddress());
   const { name, packages } = service;
   const { user } = useGlobalContext()
   const [selectedPackage, setSelectedPackage] = useState(null)
@@ -33,6 +37,7 @@ const Service = () => {
     duration: 0,
     note: null,
     totalPrice: 0,
+    dateTime: null,
     date: null,
     time: null,
   })
@@ -83,9 +88,53 @@ const Service = () => {
       totalPrice: newTotalPrice
     });
   };
+  
+  const selectedListPackage = () => {
+    if(form.listPackage.length > 0) {
+      const result = _.map(form.listPackage, (item) => {
+        const packageData = _.find(packages, { id: item.packageId });
+        return { ...packageData, quantity: item.quantity}
+      })
+      return result;
+    }
+    return [];
+  }
+  
+  const selectedListExtraService = () => {
+    if(form.extraServiceIds.length > 0) {
+      const result = _.map(form.extraServiceIds, (item) => {
+        return _.find(extraServices, { id: item });
+      })
+      return result;
+    }
+    return [];
+  }
     
-  const submit = () => {
+  const submitContinue = () => {
+    const date = new Date(form.date);
+    const time = new Date(form.time);
+    const dateTime = setSeconds(setMinutes(setHours(date, time.getHours()), time.getMinutes()), time.getSeconds());
+    setForm({ ...form, dateTime });
     setIsVisibleModalLocation(!isVisibleModalLocation)
+  }
+  
+  const submit = async () => {
+    setIsLoading(true)
+    try {
+      await bookingApi.newBooking(form);
+      router.replace('/activities')
+    } catch (error) {
+      Alert.alert('Error', error.message)
+      console.log('winter-booking-error', error)  
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
+  if(loadingService || loadingExtraService || loadingAddress) {
+    return (
+      <LoadingScreen />
+    )
   }
   
   return (
@@ -116,7 +165,7 @@ const Service = () => {
               resizeMode='contain'
             />
             <Text className='text-base text-gray-100 font-pmedium'>
-              Diện tích
+              Dịch vụ
             </Text>
           </View>
           {(packages && packages.length > 0) ? (
@@ -213,7 +262,7 @@ const Service = () => {
         
       </ScrollView>
       <TouchableOpacity
-        onPress={submit}
+        onPress={submitContinue}
         activeOpacity={0.7}
         className={`flex-row mx-3 rounded-xl min-h-[62px] justify-between items-center mt-4 mb-4 ${form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 ? 'bg-gray-200 opacity-50' : 'bg-secondary'}`}
         disabled={form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0}
@@ -229,9 +278,13 @@ const Service = () => {
       <OrderModal
         order={form}
         address={listAddress.find(item => item.isDefault)}
+        user={user}
+        service={service}
+        selectedListPackage={selectedListPackage()}
+        selectedListExtraService={selectedListExtraService()}
         visible={isVisibleModalLocation}
         onClose={() => setIsVisibleModalLocation(false)}
-        onSelect={val => console.log('winter-val', val)}
+        onSelect={submit}
       />
     </SafeAreaView>
   )

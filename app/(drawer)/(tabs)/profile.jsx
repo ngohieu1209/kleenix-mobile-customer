@@ -12,6 +12,7 @@ import { icons } from '../../../constants'
 import InfoBox from '../../../components/InfoBox'
 
 import { AntDesign } from '@expo/vector-icons';
+import HorizontalLine from '../../../components/HorizontalLine'
 
 const Profile = () => {
   const navigation = useNavigation()
@@ -26,7 +27,7 @@ const Profile = () => {
   
   return (
     <SafeAreaView className='bg-primary h-full'>
-      <View className='w-full justify-center items-center mt-6 mb-12 px-4'>
+      <View className='w-full justify-center items-center mt-6 px-4'>
         <View className='w-full flex-row justify-between mb-10'>
           <TouchableOpacity
             onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
@@ -58,29 +59,93 @@ const Profile = () => {
           titleStyles='text-lg'
         />
         
-        <View className='mt-5 flex-row'>
-          <InfoBox 
-            title={0}
-            subtitle='Posts'
-            containerStyles='mr-10'
-            titleStyles='text-xl'
-          />
-          <InfoBox 
-            title={"1.2k"}
-            subtitle='Followers'
-            titleStyles='text-xl'
-          />
-        </View>
-        
-        <View className='mt-5'>
-          <TouchableOpacity>
-            <View className='w-36 h-12 bg-secondary rounded-lg justify-center items-center mt-5'>
-              <Text className='text-white font-pmedium'>
-                Edit Profile
+      </View>
+      <View className='mt-4'>
+        <HorizontalLine />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => router.push('/payment')}
+        >
+          <View className='w-full h-6 rounded-lg flex-row justify-between'>
+            <View className='flex-row justify-center items-center space-x-2 ml-2'>
+              <Image 
+                source={icons.profile}
+                className='w-4 h-4'
+                resizeMode='contain'
+              />
+              <Text className='text-white text-base font-pmedium'>
+                Nạp kPay
               </Text>
             </View>
-          </TouchableOpacity>
-        </View>
+            <Image 
+              source={icons.rightContinue}
+              className='w-4 h-4 mr-2'
+              resizeMode='contain'
+            />
+          </View>
+        </TouchableOpacity>
+        <HorizontalLine />
+        <TouchableOpacity
+          activeOpacity={0.7}
+        >
+          <View className='w-full h-6 rounded-lg flex-row justify-between'>
+            <View className='flex-row justify-center items-center space-x-2 ml-2'>
+              <Image 
+                source={icons.profile}
+                className='w-4 h-4'
+                resizeMode='contain'
+              />
+              <Text className='text-white text-base font-pmedium'>
+                Chỉnh sửa thông tin
+              </Text>
+            </View>
+            <Image 
+              source={icons.rightContinue}
+              className='w-4 h-4 mr-2'
+              resizeMode='contain'
+            />
+          </View>
+        </TouchableOpacity>
+        <HorizontalLine />
+        <TouchableOpacity
+          activeOpacity={0.7}
+        >
+          <View className='w-full h-6 rounded-lg flex-row justify-between'>
+            <View className='flex-row justify-center items-center space-x-2 ml-2'>
+              <Image 
+                source={icons.profile}
+                className='w-4 h-4'
+                resizeMode='contain'
+              />
+              <Text className='text-white text-base font-pmedium'>
+                Trợ giúp
+              </Text>
+            </View>
+            <Image 
+              source={icons.rightContinue}
+              className='w-4 h-4 mr-2'
+              resizeMode='contain'
+            />
+          </View>
+        </TouchableOpacity>
+        <HorizontalLine />
+      </View>
+      <View className='flex-row mt-4 justify-center space-x-10'>
+        <Image 
+          source={icons.profile}
+          className='w-6 h-6'
+          resizeMode='contain'
+        />
+        <Image 
+          source={icons.profile}
+          className='w-6 h-6'
+          resizeMode='contain'
+        />
+        <Image 
+          source={icons.profile}
+          className='w-6 h-6'
+          resizeMode='contain'
+        />
       </View>
     </SafeAreaView>
   )

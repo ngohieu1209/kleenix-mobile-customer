@@ -39,10 +39,14 @@ export const endpoints = {
   auth: {
     login: '/auth/login',
     logout: '/auth/logout',
+    verify: '/auth/verify',
+    resendSMS: '/auth/resend-sms',
   },
   user: {
     getMe: '/customer/get-me',
     edit: '/customer/edit',
+    requestPayment: '/customer/request-payment',
+    paymentSuccess: '/customer/payment-success',
   },
   service: {
     list: '/service/list',

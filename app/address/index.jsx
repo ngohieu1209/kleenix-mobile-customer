@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, Alert, Image, FlatList, RefreshControl } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
@@ -12,19 +12,46 @@ import AddressCard from '../../components/AddressCard'
 import LocationModal from '../../components/LocationModal'
 
 import { addressApi } from '../../services/api'
+import LoadingScreen from '../../components/LoadingScreen'
 
 const Address = () => {
-  const { user } = useGlobalContext()
-  const [isLoading, setIsLoading] = useState(false);
+  const [isHandleLoading, setIsHandleLoading] = useState(false);
   const { data: listAddress, refetch } = useFetchData(addressApi.getListAddress());
   const [refreshing, setRefreshing] = useState(false);
   const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false)
   const [selectedId, setSelectedId] = useState(null)
-  // const [showOptions, setShowOptions] = useState(false)
+  
+  useEffect(() => {
+    refetch()
+  }, [isHandleLoading])
   
   const handleSelectCard = (id) => {
     setSelectedId(id === selectedId ? null : id)
   }
+  
+  const handleSetDefault = async (id) => {
+    setIsHandleLoading(true);
+    try {
+      await addressApi.setDefault(id);
+    } catch (error) {
+      Alert.alert('Error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+      console.log('winter-set-default-address-error', error);
+    } finally {
+      setIsHandleLoading(false);
+    }
+  }
+  
+  const handleDelete = async (id) => {
+    setIsHandleLoading(true);
+    try {
+      await addressApi.deleteAddress(id);
+    } catch (error) {
+      Alert.alert('Error', 'Có lỗi xảy ra, vui lòng thử lại sau');
+      console.log('winter-delete-address-error', error);
+    } finally {
+      setIsHandleLoading(false);
+    }
+  };
   
   const onRefresh = async () => {
     setRefreshing(true);
@@ -33,15 +60,14 @@ const Address = () => {
   }
   
   const handleSubmit = async (eventData) => {
-    setIsLoading(true)
+    setIsHandleLoading(true)
     try {
       const data = await addressApi.newAddress(eventData)
       listAddress.push(data)
-      Alert.alert('Thành công', 'Thêm địa chỉ thành công')
     } catch (error) {
       Alert.alert('Lỗi', 'Có lỗi xảy ra khi thêm địa chỉ')
     } finally {
-      setIsLoading(false)
+      setIsHandleLoading(false)
     }
   }
   
@@ -55,8 +81,11 @@ const Address = () => {
           <AddressCard 
             address={item} 
             key={index}
-            showOptions={selectedId === item.id}  
+            showOptions={selectedId === item.id && !item.isDefault}
             onToggleOptions={() => handleSelectCard(item.id)}
+            isLoading={isHandleLoading}
+            onDelete={() => handleDelete(item.id)}
+            onDefault={() => handleSetDefault(item.id)}
           />
         )}
         ListEmptyComponent={() => (

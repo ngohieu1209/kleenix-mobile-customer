@@ -21,6 +21,8 @@ import clock from "../assets/icons/clock.png";
 import clockColor from "../assets/icons/clock-color.png";
 import note from "../assets/icons/note.png";
 import boxPlus from "../assets/icons/box-plus.png";
+import closeRound from "../assets/icons/close-round.png";
+import rightContinue from "../assets/icons/continue.png";
 
 export default {
   play,
@@ -46,4 +48,6 @@ export default {
   clockColor,
   note,
   boxPlus,
+  closeRound,
+  rightContinue
 };

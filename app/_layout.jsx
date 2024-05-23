@@ -40,6 +40,7 @@ const RootLayout = () => {
         <Stack.Screen name="(drawer)" options={{ headerShown: false }}/>
         <Stack.Screen name="(service)" options={{ headerShown: false }}/>
         <Stack.Screen name="address/index" options={{ headerShown: false }} />
+        <Stack.Screen name="payment/index" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   )

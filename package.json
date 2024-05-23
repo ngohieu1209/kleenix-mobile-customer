@@ -13,6 +13,7 @@
     "@react-native-community/datetimepicker": "7.6.1",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.17",
+    "@stripe/stripe-react-native": "^0.37.3",
     "axios": "^1.6.8",
     "date-fns": "^3.6.0",
     "expo": "~50.0.14",

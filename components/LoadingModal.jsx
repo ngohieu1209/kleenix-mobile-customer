@@ -1,12 +1,11 @@
 import {View, Text, Modal, ActivityIndicator} from 'react-native';
 import React from 'react';
 
-const LoadingModal = (props) => {
-  const {visible, mess} = props;
+const LoadingModal = ({ isVisible, body}) => {
 
   return (
     <Modal
-      visible={visible}
+      visible={isVisible}
       style={[{flex: 1}]}
       transparent
       statusBarTranslucent>
@@ -15,7 +14,7 @@ const LoadingModal = (props) => {
       >
         <ActivityIndicator color={'#ffffff'} size={32} />
         <Text className='text-white text-lg font-psemibold'>
-          Đang tải
+          {body ? body : 'Đang tải dữ liệu'}
         </Text>
       </View>
     </Modal>

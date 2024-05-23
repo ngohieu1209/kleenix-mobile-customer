@@ -11,6 +11,7 @@ import Trending from '../../../components/Trending'
 import EmptyState from '../../../components/EmptyState'
 import useFetchData from '../../../services/useFetchData'
 import ServiceCard from '../../../components/ServiceCard'
+import FinanceCard from '../../../components/FinanceCard'
 import { StatusBar } from 'expo-status-bar'
 
 
@@ -58,7 +59,7 @@ const Home = () => {
               </View>
             </View>
             
-            <SearchInput />
+            <FinanceCard />
             
             <View className='w-full flex-1 pt-5 pb-8'>
               <Text className='text-gray-100 text-lg font-pregular mb-3'>

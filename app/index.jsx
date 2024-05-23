@@ -10,9 +10,14 @@ import LoadingScreen from '../components/LoadingScreen';
 import CustomButton from '../components/CustomButton';
 
 export default function App() {
-  const { isLoading, isLoggedIn } = useGlobalContext();
+  const { isLoading, isLoggedIn, user } = useGlobalContext();
   
-  if(!isLoading && isLoggedIn) return <Redirect href='/home'/>
+  if(!isLoading && isLoggedIn) {
+    if(user.verify) {
+      return <Redirect href='/home'/>
+    }
+    return <Redirect href='/verification'/>
+  }
   
   return (
     <>

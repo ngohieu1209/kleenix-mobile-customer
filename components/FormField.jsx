@@ -38,6 +38,7 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
           returnKeyType={ title === 'Tìm kiếm địa điểm' ? 'search' : 'done'}
           multiline={title === 'Ghi chú'}
           numberOfLines={title === 'Ghi chú' ? 4 : 1}
+          {...props}
         />
         
         {title === 'Password' && (

@@ -29,8 +29,11 @@ const SignIn = () => {
       const data = await authApi.login(form)
       setUser(data.result.user);
       setIsLoggedIn(true)
-      
-      router.replace('/home')
+      if(!data.result.user.verify) {
+        return router.replace('/verification')
+      } else {
+        return router.replace('/home')
+      }
     } catch (error) {
       Alert.alert('Error', error.message)
     } finally {

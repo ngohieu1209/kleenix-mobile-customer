@@ -1,19 +1,35 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { REACT_APP_BASE_ICON_URL } from '@env'
+import { router } from 'expo-router'
 
 import { fCurrency } from '../utils/format-currency'
 import { fMinutesToHours, fDateTime } from '../utils/format-time'
 import colorStatus from '../constants/color-status'
 import BookingModal from './BookingModal'
+import { bookingApi } from '../services/api'
 
 const ActivityCard = ({ activity }) => {
+  const [isLoading, setIsLoading] = useState(false)
   const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false)
-  
   const { id, createdAt, duration, note, dateTime, totalPrice, status, address, bookingPackage, bookingExtraService } = activity;
   const { service } = bookingPackage[0].package;
   const { body: statusBody, color: statusColor } = colorStatus(status);
   const iconURL = `${REACT_APP_BASE_ICON_URL}/${service.icon}`
+  
+  const submit = async () => {
+    setIsLoading(true)
+    try {
+      await bookingApi.cancelBooking(id);
+      router.replace('/activities')
+    } catch (error) {
+      Alert.alert('Lỗi', error.message)
+      console.log('winter-booking-error', error)  
+    } finally {
+      setIsLoading(false)
+    }
+  }
+  
   return (
     <View>
       <TouchableOpacity
@@ -37,7 +53,7 @@ const ActivityCard = ({ activity }) => {
         <View className='space-y-1 mt-2'>
           <Text className='text-white text-sm'>Bắt đầu: {fDateTime(dateTime)}</Text>
           <Text className='text-white text-sm'>Thực hiện: {fMinutesToHours(duration)}</Text>
-          <Text className={`text-sm ${statusColor}`}>{statusBody}</Text>
+          <Text style={{ color: `${statusColor}` }} className={`text-sm`}>{statusBody}</Text>
         </View>
       </TouchableOpacity>
       <BookingModal
@@ -45,7 +61,7 @@ const ActivityCard = ({ activity }) => {
         activity={activity}
         visible={isVisibleModalLocation}
         onClose={() => setIsVisibleModalLocation(false)}
-        onSelect={val => console.log('winter-val', val)}
+        onSelect={submit}
       />
     </View>
   )

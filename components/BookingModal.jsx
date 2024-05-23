@@ -10,8 +10,7 @@ import { addMinutes } from 'date-fns';
 
 const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
   const [isLoading, setIsLoading] = useState(false);
-  
-  const { id, createdAt, duration, note, dateTime, totalPrice, address, bookingPackage, bookingExtraService } = activity;
+  const { id, createdAt, duration, note, dateTime, totalPrice, address, bookingPackage, bookingExtraService, status } = activity;
   
   const handleClose = () => {
     onClose();
@@ -102,7 +101,7 @@ const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
                   {bookingExtraService.map((item) => (
                     <View key={item.id} className='flex-row justify-between items-center w-11/12 my-1'>
                       <Text className='text-base text-white font-pmedium'>
-                        {item.name}
+                        {item.extraService.name}
                       </Text>
                     </View>
                   ))}
@@ -154,10 +153,10 @@ const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
                   {bookingExtraService.map((item) => (
                     <View key={item.id} className='flex-row justify-between items-center w-11/12 my-1'>
                       <Text className='text-sm text-gray-100 font-pregular'>
-                        • {item.name}
+                        • {item.extraService.name}
                       </Text>
                       <Text className='text-sm text-gray-100 font-pregular'>
-                        {fCurrency(Number(item.price))}
+                        {fCurrency(Number(item.extraService.price))}
                       </Text>
                     </View>
                   ))}
@@ -176,6 +175,17 @@ const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
             </View>
           </View>
         </ScrollView>
+        {(status==='PENDING' || status === 'DELAYED') && (
+          <TouchableOpacity
+            onPress={onSelect}
+            activeOpacity={0.7}
+            className={`mx-3 rounded-xl min-h-[62px] justify-center items-center mt-4 mb-4 bg-secondary`}
+          >
+            <Text className={`text-primary font-psemibold text-lg mx-4`}>
+              Huỷ lịch đặt
+            </Text>
+          </TouchableOpacity>
+        )}
       </SafeAreaView>
     </Modal>
   );

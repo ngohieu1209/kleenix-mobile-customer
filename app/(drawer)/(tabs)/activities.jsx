@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Image, Pressable } from 'react-native'
+import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import images from '../../../constants/images'
@@ -7,35 +7,81 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { bookingApi } from '../../../services/api'
 import useFetchData from '../../../services/useFetchData'
 
-import ActivityCard from '../../../components/ActivityCard'
+import { Dropdown } from 'react-native-element-dropdown'
 
-const tabs = ['Đang chờ', 'Đang thực hiện', 'Đã hoàn thành', 'Đã hủy']
+import EmptyState from '../../../components/EmptyState'
+
+import ActivityCard from '../../../components/ActivityCard'
+import FieldDateTimePicker from '../../../components/FieldDateTimePicker'
+import icons from '../../../constants/icons'
+
+const tabs = [
+  {
+    id: 1,
+    name: 'Đang chờ',
+  },
+  {
+    id: 2,
+    name: 'Đang thực hiện',
+  },
+  {
+    id: 3,
+    name: 'Đã hoàn thành',
+  },
+  {
+    id: 4,
+    name: 'Đã hủy',
+  },
+]
+
 const Activities = () => {
-  const [activateTab, setActivateTab] = useState(0);
+  const [activateTab, setActivateTab] = useState(1);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [status, setStatus] = useState('PENDING,DELAYED');
-  const { data: listActivity, refetch } = useFetchData(bookingApi.getListBooking(status, startDate, endDate));
-  const scrollViewRef = useRef();
-  const scrollPositionRef = useRef(0);
+  const [isFilter, setIsFilter] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   
-  const handleTabPress = (index) => {
-    if (index !== activateTab) {
-      setActivateTab(index);
-      // const tabWidth = 200; // Giả sử mỗi tab có chiều rộng là 100px, điều chỉnh theo thực tế
-      // const scrollToX = tabWidth * index; // Tính toán vị trí x dựa trên index của tab
-      // scrollViewRef.current.scrollTo({ x: scrollToX, animated: true });
-    }
-  };
+  const { data: listActivity, isLoading, refetch } = useFetchData(bookingApi.getListBooking(status, startDate, endDate));
+  const handleListActivity = async () => {
+    if(activateTab === 1) setStatus('PENDING,DELAYED');
+    if(activateTab === 2) setStatus('CONFIRMED');
+    if(activateTab === 3) setStatus('COMPLETED');
+    if(activateTab === 4) setStatus('CANCELLED_BY_CUSTOMER,CANCELLED_BY_KLEENIX');
+    await refetch();
+  }
+  
+  const handleCloseFilter = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setIsFilter(false);
+  }
+  
+  useEffect(() => {
+    handleListActivity();
+  }, [activateTab, startDate, endDate, status]);
+  
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
   
   return (
     <SafeAreaView className='bg-primary h-full'>
       <FlatList 
         data={listActivity}
-        keyExtractor={(item) => item}
-        renderItem={({ item, index }) => (
-          <ActivityCard key={index} activity={item} />
-        )}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item, index }) => {
+          if(isLoading) {
+            return (
+              <View className='mt-12'>
+                <ActivityIndicator key={index} color={'#ffffff'} size={32} />
+              </View>
+            )
+          }
+          return <ActivityCard key={index} activity={item} />
+        }}
         ListHeaderComponent={() => (
           <View className='flex my-6 px-4 space-y-2'>
             <View className="flex justify-between items-center flex-row">
@@ -54,49 +100,72 @@ const Activities = () => {
               </View>
             </View>
             
-            <FlatList 
-              data={tabs}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              initialScrollIndex={activateTab}
-              keyExtractor={(item) => item}
-              renderItem={({ item, index }) => (
-                <Pressable
-                  key={index}
-                  className={`px-4 py-2 rounded-full ${activateTab === index ? 'bg-secondary' : 'bg-black-100'}`}
-                  onPress={() => handleTabPress(index)}
+            {isFilter ? (
+              <View className='items-center'>
+                <FieldDateTimePicker
+                  title='Từ ngày'
+                  value={startDate}
+                  mode="date"
+                  handleChangeDateTime={(selectedDate) => setStartDate(selectedDate)}
+                />
+                <FieldDateTimePicker 
+                  title='Đến ngày'
+                  value={endDate}
+                  mode="date"
+                  handleChangeDateTime={(selectedDate) => setEndDate(selectedDate)}
+                  otherStyles='mt-4'
+                />
+                <TouchableOpacity
+                  className='mt-4'
+                  activeOpacity={0.7}
+                  onPress={handleCloseFilter}
                 >
-                  <Text className={`text-sm font-pmedium ${activateTab === index ? 'text-black-100' : 'text-gray-100'}`}>
-                    {item}
-                  </Text>
-                </Pressable>
-              )}
-            />
-            
-            <ScrollView 
-              horizontal 
-              showsHorizontalScrollIndicator={false} 
-              className="flex-row gap-4"
-              ref={scrollViewRef}
-              onScroll={(event) => {
-                scrollPositionRef.current = event.nativeEvent.contentOffset.x; // Cập nhật ref thay vì state
-              }}
-              scrollEventThrottle={16}
-            >
-              {tabs.map((tab, index) => (
-                <Pressable 
-                  key={index}
-                  className={`px-4 py-2 rounded-full ${activateTab === index ? 'bg-secondary' : 'bg-black-100'}`}
-                  onPress={() => handleTabPress(index)}
+                  <Image
+                    source={icons.closeRound}
+                    className='w-6 h-6'
+                    resizeMode='contain'
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View className='flex-row justify-between'>
+                <Dropdown 
+                  className='w-[50%] h-12 px-4 bg-secondary rounded-2xl justify-center items-center border-2 border-black-200 space-x-2'
+                  data={tabs}
+                  placeholderStyle={{ color: '#7b7b8b' }}
+                  labelField="name"
+                  valueField="id"
+                  value={activateTab}
+                  containerStyle={{ backgroundColor: 'rgb(30,30,45)', borderRadius: 10, borderColor: '#FF9001'}}
+                  itemTextStyle={{ color: 'white' }}
+                  activeColor='#1E1E2D'
+                  itemContainerStyle={{ backgroundColor: 'rgb(30,30,45)', borderRadius: 10 }}
+                  selectedTextStyle={{ color: 'black', fontWeight: '600' }}
+                  onChange={item => {
+                    setActivateTab(item.id);
+                  }}
+                />
+                
+                <TouchableOpacity
+                  className='w-[50%] h-12 px-4 bg-secondary rounded-2xl justify-center items-center border-2 border-black-200 space-x-2'
+                  activeOpacity={0.7}
+                  onPress={() => setIsFilter(!isFilter)}
                 >
-                  <Text className={`text-sm font-pmedium ${activateTab === index ? 'text-black-100' : 'text-gray-100'}`}>
-                    {tab}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
+                  <Text className='text-black text-base font-bold'>Lọc theo ngày</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         )}
+        ListEmptyComponent={() => (
+          <View className='mt-12'>
+            <EmptyState 
+              title="Không tìm thấy dữ liệu"
+              subtitle="Vui lòng quay lại sau!"
+            />
+          </View>
+        )}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </SafeAreaView>
   )

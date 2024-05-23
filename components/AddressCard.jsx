@@ -1,16 +1,18 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { router } from 'expo-router'
+import { addressApi } from '../services/api'
+import DialogModal from './DialogModal'
+import LoadingModal from './LoadingModal'
 
-const AddressCard = ({ address: { id, province, district, ward, street, isDefault, long, lat }, onToggleOptions, showOptions }) => {
+const AddressCard = ({ address: { id, province, district, ward, street, isDefault, long, lat }, onToggleOptions, showOptions, onDefault, onDelete }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   
-  const handleSetDefault = async (id) => {
-    
-  }
+  console.log('winter-address-card', id, province, district, ward, street, isDefault, long, lat)
   
-  const handleDelete = async (id) => {
-    
-  }
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
   
   return (
     <TouchableOpacity 
@@ -26,12 +28,19 @@ const AddressCard = ({ address: { id, province, district, ward, street, isDefaul
       )}
       {showOptions && (
         <View className='flex-row justify-between space-x-4 mt-4'>
-          <TouchableOpacity className='bg-blue-500 p-2 rounded-xl'>
+          <TouchableOpacity className='bg-blue-500 p-2 rounded-xl' onPress={onDefault}>
             <Text className='text-white font-pmedium'>Đặt mặc định</Text>
           </TouchableOpacity>
-          <TouchableOpacity className='bg-red-500 p-2 rounded-xl'>
+          <TouchableOpacity className='bg-red-500 p-2 rounded-xl' onPress={() => setIsModalVisible(true)}>
             <Text className='text-white font-pmedium'>Xoá</Text>
           </TouchableOpacity>
+          <DialogModal
+            isVisible={isModalVisible}
+            title="Xoá địa chỉ"
+            message="Bạn có chắc muốn xoá không?"
+            onConfirm={onDelete}
+            onCancel={handleCancel}
+          />
         </View>
       )}
     </TouchableOpacity>
