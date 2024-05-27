@@ -2,29 +2,41 @@ import { View, Text, FlatList, Image, RefreshControl, Alert } from 'react-native
 import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { useGlobalContext } from '../../../context/GlobalProvider'
-import { serviceApi } from '../../../services/api'
+import { useGlobalContext } from '../../context/GlobalProvider'
+import { serviceApi, promotionApi } from '../../services/api'
 
-import { images } from '../../../constants'
-import SearchInput from '../../../components/SearchInput'
-import Trending from '../../../components/Trending'
-import EmptyState from '../../../components/EmptyState'
-import useFetchData from '../../../services/useFetchData'
-import ServiceCard from '../../../components/ServiceCard'
-import FinanceCard from '../../../components/FinanceCard'
+import { images } from '../../constants'
+import SearchInput from '../../components/SearchInput'
+import Promotion from '../../components/Promotion'
+import EmptyState from '../../components/EmptyState'
+import useFetchData from '../../services/useFetchData'
+import ServiceCard from '../../components/ServiceCard'
+import FinanceCard from '../../components/FinanceCard'
 import { StatusBar } from 'expo-status-bar'
+import LoadingScreen from '../../components/LoadingScreen'
 
 
 const Home = () => {
-  const { user, setUser, setIsLoggedIn } = useGlobalContext()
-  const { data: listService, refetch } = useFetchData(serviceApi.getListService());
+  const { user, setUser, setIsLoggedIn, refreshDataUser, isLoading } = useGlobalContext()
+  const { data: listService, isLoading: loadingService, refetch } = useFetchData(serviceApi.getListService());
+  const { data: listPromotion, isLoading: loadingPromotion, refetch: refetchPromotion } = useFetchData(promotionApi.getList());
   
   const [refreshing, setRefreshing] = useState(false);
   
   const onRefresh = async () => {
     setRefreshing(true);
     await refetch();
+    await refetchPromotion();
+    await refreshDataUser();
     setRefreshing(false);
+  }
+  
+  // useEffect(() => {
+  //   onRefresh();
+  // }, [user])
+  
+  if(isLoading) {
+    return <LoadingScreen />
   }
   
   return (
@@ -66,7 +78,7 @@ const Home = () => {
                 Ưu đãi hot
               </Text>
               
-              {/* <Trending posts={latestPosts} /> */}
+              <Promotion promotions={listPromotion} />
             </View>
             
             <View className='w-full flex-1 pt-5'>

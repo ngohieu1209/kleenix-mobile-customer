@@ -8,7 +8,7 @@ import { fDateTime } from '../utils/format-time'
 import { fCurrency } from '../utils/format-currency'
 import { addMinutes } from 'date-fns'
 
-const OrderModal = ({ visible, onClose, onSelect, order, address, user, service, selectedListPackage, selectedListExtraService}) => {
+const OrderModal = ({ visible, onClose, onSelect, order, address, user, service, selectedListPackage, selectedListExtraService, selectedPromotion}) => {
   const [isLoading, setIsLoading] = useState(false);
   
   const handleClose = () => {
@@ -126,16 +126,55 @@ const OrderModal = ({ visible, onClose, onSelect, order, address, user, service,
                     ))}
                   </>
                 )}
+              {/* MÃ KHUYẾN MÃI */}
+              {selectedPromotion && (
+                  <>
+                    <HorizontalLine />
+                    <Text className='text-base text-white font-pmedium mb-1'>Khuyến mãi</Text>
+                      <View className='flex-row justify-between items-center w-11/12 my-1'>
+                        <Text className='text-sm text-gray-100 font-pregular'>
+                          {selectedPromotion.name}
+                        </Text>
+                        <Text className='text-sm text-gray-100 font-pregular'>
+                          - {fCurrency(Number(selectedPromotion.discount))}
+                        </Text>
+                      </View>
+                  </>
+                )}
               {/* TỔNG CỘNG */}
               <HorizontalLine />
               <View className='flex-row justify-between items-center w-11/12 my-1'>
-                  <Text className='text-base text-secondary font-psemibold'>
-                    TỔNG CỘNG
-                  </Text>
-                  <Text className='text-base text-secondary font-psemibold'>
-                    {fCurrency(Number(order.totalPrice))}
-                  </Text>
-                </View>
+                <Text className='text-base text-secondary font-psemibold'>
+                  TỔNG CỘNG
+                </Text>
+                <Text className='text-base text-secondary font-psemibold'>
+                  {fCurrency(Number(order.totalPrice))}
+                </Text>
+              </View>
+            </View>
+          </View>
+          
+          <View className='space-y-2 mt-6'>
+            <View className='flex-row space-x-2'>
+              <Image 
+                source={icons.location}
+                className='w-5 h-5'
+                resizeMode='contain'
+              />
+              <Text className='text-base text-gray-100 font-pmedium'>
+                Hình thức thanh toán
+              </Text>
+            </View>
+            <View className='w-full py-4 px-4 bg-black-100 rounded-2xl justify-start items-start'>
+              {/* HÌNH THỨC THANH TOÁN */}
+              <View className='flex-row justify-between items-center w-11/12 my-1'>
+                <Text className='text-base text-white font-psemibold'>
+                  THANH TOÁN
+                </Text>
+                <Text className='text-base text-white font-psemibold'>
+                  {order.paymentStatus === 'KPAY' ? 'KPAY' : 'Tiền mặt'}
+                </Text>
+              </View>
             </View>
           </View>
         </ScrollView>

@@ -12,6 +12,10 @@ const userApi = {
   paymentSuccess: async(amount) => {
     const { data } = await axiosInstance.post(endpoints.user.paymentSuccess, { amount });
     return data.result;
+  },
+  editProfile: async(eventData) => {
+    const { data } = await axiosInstance.patch(endpoints.user.edit, eventData);
+    return data.result;
   }
 }
 

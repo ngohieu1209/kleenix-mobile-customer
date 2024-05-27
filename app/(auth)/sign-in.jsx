@@ -9,6 +9,7 @@ import { images } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { authApi } from '../../services/api'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SignIn = () => {
   const { setUser, setIsLoggedIn } = useGlobalContext()
@@ -28,6 +29,8 @@ const SignIn = () => {
     try {
       const data = await authApi.login(form)
       setUser(data.result.user);
+      await AsyncStorage.setItem('accessToken', data.result.token.accessToken)
+      await AsyncStorage.setItem('refreshToken', data.result.token.refreshToken)
       setIsLoggedIn(true)
       if(!data.result.user.verify) {
         return router.replace('/verification')

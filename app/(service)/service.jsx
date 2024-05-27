@@ -5,7 +5,7 @@ import { REACT_APP_BASE_ICON_URL } from '@env'
 
 import { useLocalSearchParams, router } from 'expo-router'
 import _ from 'lodash'
-import { setHours, setMinutes, setSeconds } from 'date-fns';
+import { setHours, setMinutes, setSeconds, isAfter, addHours } from 'date-fns';
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import BackButtonHeader from '../../components/BackButtonHeader'
@@ -13,12 +13,14 @@ import FieldDateTimePicker from '../../components/FieldDateTimePicker'
 import OrderModal from '../../components/OrderModal'
 
 import useFetchData from '../../services/useFetchData'
-import { serviceApi, extraServiceApi, addressApi, bookingApi } from '../../services/api'
+import { serviceApi, extraServiceApi, addressApi, bookingApi, promotionApi } from '../../services/api'
 import { useGlobalContext } from '../../context/GlobalProvider'
 import { icons } from '../../constants'
 import { fCurrency } from '../../utils/format-currency'
 import { fMinutesToHours } from '../../utils/format-time'
 import LoadingScreen from '../../components/LoadingScreen'
+import UsablePromotionModal from '../../components/UsablePromotionModal'
+import PaymentStatusModal from '../../components/PaymentStatusModal'
 
 
 const Service = () => {
@@ -28,6 +30,7 @@ const Service = () => {
   const { data: service, isLoading: loadingService } = useFetchData(serviceApi.getListPackage(serviceId));
   const { data: extraServices, isLoading: loadingExtraService } = useFetchData(extraServiceApi.getListExtraService());
   const { data: listAddress, isLoading: loadingAddress } = useFetchData(addressApi.getListAddress());
+  const { data: listUsablePromotion, isLoading: loadingPromotion } = useFetchData(promotionApi.getListUsable());
   const { name, packages } = service;
   const { user } = useGlobalContext()
   const [selectedPackage, setSelectedPackage] = useState(null)
@@ -40,8 +43,13 @@ const Service = () => {
     dateTime: null,
     date: null,
     time: null,
+    paymentStatus: null,
+    promotionId: null,
   })
-  const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false)
+  const [isVisibleModalOrder, setIsVisibleModalOrder] = useState(false)
+  const [isVisibleModalPromotion, setIsVisibleModalPromotion] = useState(false)
+  const [isVisibleModalPaymentStatus, setIsVisibleModalPaymentStatus] = useState(false)
+  const [selectedPromotion, setSelectedPromotion] = useState(null)
 
   const handleSelectPackage = (packageService) => {
     let newDuration = form.duration;
@@ -109,13 +117,28 @@ const Service = () => {
     }
     return [];
   }
+  
+  const isValidateTime = (selectedDate, selectedTime) => {
+    const now = new Date();
+    const minimumDateTime = addHours(now, 2); // Thời điểm hiện tại cộng thêm 2 giờ
+    const dateTime = setSeconds(setMinutes(setHours(selectedDate, selectedTime.getHours()), selectedTime.getMinutes()), selectedTime.getSeconds());
+  
+    const startOfWorkDay = setHours(setMinutes(setSeconds(selectedDate, 0, 0), 0), 7); // 7:00 sáng
+    const endOfWorkDay = setHours(setMinutes(setSeconds(selectedDate, 59, 59), 59), 21); // 21:00 tối
+  
+    return isAfter(dateTime, minimumDateTime) && dateTime >= startOfWorkDay && dateTime <= endOfWorkDay;
+  };
     
   const submitContinue = () => {
     const date = new Date(form.date);
     const time = new Date(form.time);
     const dateTime = setSeconds(setMinutes(setHours(date, time.getHours()), time.getMinutes()), time.getSeconds());
-    setForm({ ...form, dateTime });
-    setIsVisibleModalLocation(!isVisibleModalLocation)
+    if(!isValidateTime(date, time)) {
+      Alert.alert('Thời gian không hợp lệ', 'Vui lòng chọn thời gian sau 2 tiếng từ hiện tại và trong khoảng từ 7h đến 21h.');
+    } else {
+      setForm({ ...form, dateTime });
+      setIsVisibleModalOrder(!isVisibleModalOrder)
+    }
   }
   
   const submit = async () => {
@@ -131,7 +154,34 @@ const Service = () => {
     }
   }
   
-  if(loadingService || loadingExtraService || loadingAddress) {
+  const handleSelectPromotion = (promotion) => {
+    setSelectedPromotion(promotion)
+    setForm({
+      ...form,
+      promotionId: promotion.id,
+      totalPrice: Number(form.totalPrice) - Number(promotion.discount)
+    })
+    setIsVisibleModalPromotion(false)
+  }
+  
+  const handleCancelPromotion = () => {
+    setForm({
+      ...form,
+      promotionId: null,
+      totalPrice: Number(form.totalPrice) + Number(selectedPromotion.discount)
+    })
+    setSelectedPromotion(null)
+  }
+  
+  const handleSelectPaymentStatus = (paymentStatus) => {
+    setForm({
+      ...form,
+      paymentStatus
+    })
+    setIsVisibleModalPaymentStatus(false)
+  }
+  
+  if(loadingService || loadingExtraService || loadingAddress || loadingPromotion) {
     return (
       <LoadingScreen />
     )
@@ -260,12 +310,104 @@ const Service = () => {
           otherStyles="mt-8"
         />
         
+        <View className='space-y-2 mt-8'>
+          <View className='flex-row space-x-2'>
+            <Image 
+              source={icons.giftBox}
+              className='w-5 h-5'
+              resizeMode='contain'
+            />
+            <Text className='text-base text-gray-100 font-pmedium'>
+              Áp dụng khuyến mãi
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity 
+              className='mt-2' 
+              activeOpacity={0.7}
+              onPress={() => setIsVisibleModalPromotion(true)}
+            >
+              <View 
+                className={`w-full py-4 px-4 bg-black-100 rounded-2xl flex-row justify-between items-center space-x-4`}
+              >
+                <View>
+                  <Text className='text-base text-white font-pmedium'>{selectedPromotion ? selectedPromotion.name : 'Chọn khuyến mãi'}</Text>
+                </View>
+                {selectedPromotion ? (
+                  <TouchableOpacity
+                    onPress={handleCancelPromotion}
+                    activeOpacity={0.7}
+                  >
+                    <Image 
+                      source={icons.close}
+                      className='w-4 h-4 mr-2'
+                      resizeMode='contain'
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <Image 
+                    source={icons.rightContinue}
+                    className='w-4 h-4 mr-2'
+                    resizeMode='contain'
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        
+        <View className='space-y-2 mt-8'>
+          <View className='flex-row space-x-2'>
+            <Image 
+              source={icons.wallet}
+              className='w-5 h-5'
+              resizeMode='contain'
+            />
+            <Text className='text-base text-gray-100 font-pmedium'>
+              Hình thức thanh toán
+            </Text>
+          </View>
+          <View>
+            <TouchableOpacity 
+              className='mt-2' 
+              activeOpacity={0.7}
+              onPress={() => setIsVisibleModalPaymentStatus(true)}
+            >
+              <View 
+                className={`w-full py-4 px-4 bg-black-100 rounded-2xl flex-row justify-between items-center space-x-4`}
+              >
+                <View>
+                  {/* <Image 
+                    source={{ uri: `${iconBaseURL}/${item.icon}` }}
+                    className='w-5 h-5'
+                    resizeMode='contain'
+                  /> */}
+                  <Text className='text-base text-white font-pmedium'>
+                    {
+                      form.paymentStatus ? 
+                      (form.paymentStatus === 'KPAY' ? 'KPAY' : 'Tiền mặt') : 
+                      'Chọn hình thức thanh toán'
+                    }
+                  </Text>
+                </View>
+                { !form.paymentStatus && (
+                  <Image 
+                    source={icons.rightContinue}
+                    className='w-4 h-4 mr-2'
+                    resizeMode='contain'
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        
       </ScrollView>
       <TouchableOpacity
         onPress={submitContinue}
         activeOpacity={0.7}
-        className={`flex-row mx-3 rounded-xl min-h-[62px] justify-between items-center mt-4 mb-4 ${form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 ? 'bg-gray-200 opacity-50' : 'bg-secondary'}`}
-        disabled={form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0}
+        className={`flex-row mx-3 rounded-xl min-h-[62px] justify-between items-center mt-4 mb-4 ${form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 || form.paymentStatus === null ? 'bg-gray-200 opacity-50' : 'bg-secondary'}`}
+        disabled={form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 || form.paymentStatus === null}
       >
         <Text className={`text-primary font-psemibold text-lg mx-4`}>
           {fCurrency(form.totalPrice)}/{fMinutesToHours(form.duration)}
@@ -282,9 +424,21 @@ const Service = () => {
         service={service}
         selectedListPackage={selectedListPackage()}
         selectedListExtraService={selectedListExtraService()}
-        visible={isVisibleModalLocation}
-        onClose={() => setIsVisibleModalLocation(false)}
+        selectedPromotion={selectedPromotion}
+        visible={isVisibleModalOrder}
+        onClose={() => setIsVisibleModalOrder(false)}
         onSelect={submit}
+      />
+      <UsablePromotionModal
+        promotions={listUsablePromotion}
+        visible={isVisibleModalPromotion}
+        onClose={() => setIsVisibleModalPromotion(false)}
+        onSelect={handleSelectPromotion}
+      />
+      <PaymentStatusModal 
+        visible={isVisibleModalPaymentStatus}
+        onClose={() => setIsVisibleModalPaymentStatus(false)}
+        onSelect={handleSelectPaymentStatus}
       />
     </SafeAreaView>
   )

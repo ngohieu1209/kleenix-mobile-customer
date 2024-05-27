@@ -41,6 +41,7 @@ export const endpoints = {
     logout: '/auth/logout',
     verify: '/auth/verify',
     resendSMS: '/auth/resend-sms',
+    changePassword: '/auth/change-password'
   },
   user: {
     getMe: '/customer/get-me',
@@ -65,5 +66,10 @@ export const endpoints = {
     cancel: '/booking/cancel',
     list: '/booking/list',
     detail: '/booking/detail',
+  },
+  promotion: {
+    list: '/promotion/list',
+    usable: '/promotion/list/usable',
+    claim: '/promotion/claim'
   }
 };

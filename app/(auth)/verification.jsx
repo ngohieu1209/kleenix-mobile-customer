@@ -84,7 +84,7 @@ const Verification = () => {
         </View>
         
         <CustomButton 
-          title={isSubmitting ? <ActivityIndicator color={'#CDCDE0'} size={32} /> : 'Continue'}
+          title={isSubmitting ? <ActivityIndicator color={'#CDCDE0'} size={32} /> : 'Tiếp tục'}
           handlePress={submit}
           containerStyles='mt-16'
           isLoading={isSubmitting}

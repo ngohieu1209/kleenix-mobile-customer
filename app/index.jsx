@@ -13,7 +13,7 @@ export default function App() {
   const { isLoading, isLoggedIn, user } = useGlobalContext();
   
   if(!isLoading && isLoggedIn) {
-    if(user.verify) {
+    if(user && user.verify) {
       return <Redirect href='/home'/>
     }
     return <Redirect href='/verification'/>

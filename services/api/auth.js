@@ -11,6 +11,10 @@ const authApi = {
     await AsyncStorage.setItem('refreshToken', token.refreshToken);
     return data;
   },
+  logout: async() => {
+    const { data } = await axiosInstance.post(endpoints.auth.logout)
+    return data
+  },
   verify: async(eventData) => {
     const code = eventData.code1 + eventData.code2 + eventData.code3 + eventData.code4;
     const { data } = await axiosInstance.post(endpoints.auth.verify, { code });
@@ -19,6 +23,10 @@ const authApi = {
   resendSMS: async () => {
     const { data } = await axiosInstance.post(endpoints.auth.resendSMS);
     return data.result;
+  },
+  changePassword: async(eventData) => {
+    const { data } = await axiosInstance.post(endpoints.auth.changePassword, eventData)
+    return data.result
   }
 }
 

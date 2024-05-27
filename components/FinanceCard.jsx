@@ -14,7 +14,7 @@ const FinanceCard = () => {
           K-Pay
         </Text>
         <Text className='text-base text-secondary-200 font-pmedium'>
-          {fCurrency(Number(user.kPay))}
+          {user && fCurrency(Number(user.kPay))}
         </Text>
       </View>
       <View 
@@ -24,7 +24,7 @@ const FinanceCard = () => {
           K-Point
         </Text>
         <Text className='text-base text-secondary-200 font-pmedium'>
-          {user.kPoints}
+          {user && user.kPoints}
         </Text>
       </View>
     </View>

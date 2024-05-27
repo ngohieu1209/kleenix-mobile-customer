@@ -1,19 +1,19 @@
 import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import images from '../../../constants/images'
+import images from '../../constants/images'
 import { ScrollView } from 'react-native-gesture-handler'
 
-import { bookingApi } from '../../../services/api'
-import useFetchData from '../../../services/useFetchData'
+import { bookingApi } from '../../services/api'
+import useFetchData from '../../services/useFetchData'
 
 import { Dropdown } from 'react-native-element-dropdown'
 
-import EmptyState from '../../../components/EmptyState'
+import EmptyState from '../../components/EmptyState'
 
-import ActivityCard from '../../../components/ActivityCard'
-import FieldDateTimePicker from '../../../components/FieldDateTimePicker'
-import icons from '../../../constants/icons'
+import ActivityCard from '../../components/ActivityCard'
+import FilterDateTimePicker from '../../components/FilterDateTimePicker'
+import icons from '../../constants/icons'
 
 const tabs = [
   {
@@ -38,17 +38,17 @@ const Activities = () => {
   const [activateTab, setActivateTab] = useState(1);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [status, setStatus] = useState('PENDING,DELAYED');
+  const [status, setStatus] = useState('PENDING');
   const [isFilter, setIsFilter] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   
   const { data: listActivity, isLoading, refetch } = useFetchData(bookingApi.getListBooking(status, startDate, endDate));
-  const handleListActivity = async () => {
-    if(activateTab === 1) setStatus('PENDING,DELAYED');
-    if(activateTab === 2) setStatus('CONFIRMED');
+  const handleListActivity = (activateTab) => {
+    setActivateTab(activateTab)
+    if(activateTab === 1) setStatus('PENDING');
+    if(activateTab === 2) setStatus('CONFIRMED,DELIVERY,WORKING');
     if(activateTab === 3) setStatus('COMPLETED');
     if(activateTab === 4) setStatus('CANCELLED_BY_CUSTOMER,CANCELLED_BY_KLEENIX');
-    await refetch();
   }
   
   const handleCloseFilter = () => {
@@ -58,8 +58,8 @@ const Activities = () => {
   }
   
   useEffect(() => {
-    handleListActivity();
-  }, [activateTab, startDate, endDate, status]);
+    refetch()
+  }, [status, startDate, endDate])
   
   const onRefresh = async () => {
     setRefreshing(true);
@@ -102,13 +102,13 @@ const Activities = () => {
             
             {isFilter ? (
               <View className='items-center'>
-                <FieldDateTimePicker
+                <FilterDateTimePicker
                   title='Từ ngày'
                   value={startDate}
                   mode="date"
                   handleChangeDateTime={(selectedDate) => setStartDate(selectedDate)}
                 />
-                <FieldDateTimePicker 
+                <FilterDateTimePicker 
                   title='Đến ngày'
                   value={endDate}
                   mode="date"
@@ -132,7 +132,8 @@ const Activities = () => {
                 <Dropdown 
                   className='w-[50%] h-12 px-4 bg-secondary rounded-2xl justify-center items-center border-2 border-black-200 space-x-2'
                   data={tabs}
-                  placeholderStyle={{ color: '#7b7b8b' }}
+                  placeholderStyle={{ color: '#FF9001' }}
+                  placeholder=''
                   labelField="name"
                   valueField="id"
                   value={activateTab}
@@ -142,7 +143,7 @@ const Activities = () => {
                   itemContainerStyle={{ backgroundColor: 'rgb(30,30,45)', borderRadius: 10 }}
                   selectedTextStyle={{ color: 'black', fontWeight: '600' }}
                   onChange={item => {
-                    setActivateTab(item.id);
+                    handleListActivity(item.id)
                   }}
                 />
                 

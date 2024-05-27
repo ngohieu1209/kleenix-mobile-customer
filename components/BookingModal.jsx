@@ -10,8 +10,8 @@ import { addMinutes } from 'date-fns';
 
 const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { id, createdAt, duration, note, dateTime, totalPrice, address, bookingPackage, bookingExtraService, status } = activity;
-  
+  const { id, createdAt, duration, note, dateTime, totalPrice, address, bookingPackage, bookingExtraService, status, paymentStatus, customerPromotion } = activity;
+  const selectedPromotion = customerPromotion.length > 0 ? customerPromotion[0] : null;
   const handleClose = () => {
     onClose();
   };
@@ -162,16 +162,50 @@ const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
                   ))}
                 </>
               )}
-              <HorizontalLine />
-            {/* TỔNG CỘNG */}
-              <View className='flex-row justify-between items-center w-11/12 my-1'>
-                <Text className='text-lg text-secondary font-psemibold'>
-                  TỔNG CỘNG
-                </Text>
-                <Text className='text-lg text-secondary font-psemibold'>
-                  {fCurrency(Number(totalPrice))}
-                </Text>
-              </View>
+              {/* MÃ KHUYẾN MÃI */}
+              {selectedPromotion && (
+                <>
+                  <HorizontalLine />
+                  <Text className='text-base text-white font-pmedium mb-1'>Khuyến mãi</Text>
+                    <View className='flex-row justify-between items-center w-11/12 my-1'>
+                      <Text className='text-sm text-gray-100 font-pregular'>
+                        {selectedPromotion.promotion.name}
+                      </Text>
+                      <Text className='text-sm text-gray-100 font-pregular'>
+                        - {fCurrency(Number(selectedPromotion.promotion.discount))}
+                      </Text>
+                    </View>
+                </>
+              )}
+            { !status.includes('CANCELLED') && (
+              <>
+                {/* PAYMENT STATUS */}
+                  <HorizontalLine />
+                  <Text className='text-base text-white font-pmedium mb-1'>
+                    {paymentStatus === 'KPAY' ? 'Đã thanh toán bằng KPAY' : 'Thanh toán qua Tiền mặt'}
+                  </Text>
+                  <HorizontalLine />
+                {/* TỔNG CỘNG */}
+                  <View className='flex-row justify-between items-center w-11/12 my-1'>
+                    <Text className='text-lg text-secondary font-psemibold'>
+                      TỔNG CỘNG
+                    </Text>
+                    {
+                      paymentStatus === 'KPAY' ? (
+                        <Text className={`text-lg text-secondary font-psemibold `}>
+                          {fCurrency(Number(0))} {`(`}
+                          <Text className={`text-lg text-secondary font-psemibold ${paymentStatus === 'KPAY' ? 'line-through' : ''}`}>{fCurrency(Number(totalPrice))}</Text>
+                          {`)`}
+                        </Text>
+                      ) : (
+                        <Text className={`text-lg text-secondary font-psemibold `}>
+                          {fCurrency(Number(totalPrice))}
+                        </Text>
+                      )
+                    }
+                  </View>
+              </>
+            )}
             </View>
           </View>
         </ScrollView>

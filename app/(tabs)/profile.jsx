@@ -6,34 +6,34 @@ import { router } from 'expo-router'
 import { useNavigation } from '@react-navigation/native'
 import { DrawerActions } from '@react-navigation/native'
 
-import { useGlobalContext } from '../../../context/GlobalProvider'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
-import { icons } from '../../../constants'
-import InfoBox from '../../../components/InfoBox'
+import { icons } from '../../constants'
+import InfoBox from '../../components/InfoBox'
 
 import { AntDesign } from '@expo/vector-icons';
-import HorizontalLine from '../../../components/HorizontalLine'
+import HorizontalLine from '../../components/HorizontalLine'
+import { authApi } from '../../services/api'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Profile = () => {
   const navigation = useNavigation()
   const { user, setUser, setIsLoggedIn } = useGlobalContext()
   
-  const logout = () => {
+  const logout = async () => {
+    // await authApi.logout()
+    await AsyncStorage.removeItem('accessToken')
+    await AsyncStorage.removeItem('refreshToken')
     setUser(null)
     setIsLoggedIn(false)
-    
-    router.replace('/sign-in')
+    router.replace('sign-in')
   }
   
   return (
     <SafeAreaView className='bg-primary h-full'>
       <View className='w-full justify-center items-center mt-6 px-4'>
-        <View className='w-full flex-row justify-between mb-10'>
-          <TouchableOpacity
-            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-          >
-            <AntDesign name="menu-unfold" size={24} color="#98E4FF" />
-          </TouchableOpacity>
+        <View className='w-full flex-row justify-end mb-10'>
           <TouchableOpacity
             onPress={logout}
           >
@@ -54,7 +54,7 @@ const Profile = () => {
         </View>
         
         <InfoBox 
-          title={user.name}
+          title={user && user.name}
           containerStyles='mt-5'
           titleStyles='text-lg'
         />
@@ -69,8 +69,8 @@ const Profile = () => {
           <View className='w-full h-6 rounded-lg flex-row justify-between'>
             <View className='flex-row justify-center items-center space-x-2 ml-2'>
               <Image 
-                source={icons.profile}
-                className='w-4 h-4'
+                source={icons.wallet}
+                className='w-6 h-6'
                 resizeMode='contain'
               />
               <Text className='text-white text-base font-pmedium'>
@@ -87,12 +87,36 @@ const Profile = () => {
         <HorizontalLine />
         <TouchableOpacity
           activeOpacity={0.7}
+          onPress={() => router.push('/address')}
         >
           <View className='w-full h-6 rounded-lg flex-row justify-between'>
             <View className='flex-row justify-center items-center space-x-2 ml-2'>
               <Image 
-                source={icons.profile}
-                className='w-4 h-4'
+                source={icons.homeAddress}
+                className='w-6 h-6'
+                resizeMode='contain'
+              />
+              <Text className='text-white text-base font-pmedium'>
+                Địa chỉ
+              </Text>
+            </View>
+            <Image 
+              source={icons.rightContinue}
+              className='w-4 h-4 mr-2'
+              resizeMode='contain'
+            />
+          </View>
+        </TouchableOpacity>
+        <HorizontalLine />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => router.push('edit-information')}
+        >
+          <View className='w-full h-6 rounded-lg flex-row justify-between'>
+            <View className='flex-row justify-center items-center space-x-2 ml-2'>
+              <Image 
+                source={icons.pen}
+                className='w-5 h-5'
                 resizeMode='contain'
               />
               <Text className='text-white text-base font-pmedium'>
@@ -113,8 +137,8 @@ const Profile = () => {
           <View className='w-full h-6 rounded-lg flex-row justify-between'>
             <View className='flex-row justify-center items-center space-x-2 ml-2'>
               <Image 
-                source={icons.profile}
-                className='w-4 h-4'
+                source={icons.helpDesk}
+                className='w-6 h-6'
                 resizeMode='contain'
               />
               <Text className='text-white text-base font-pmedium'>
@@ -132,18 +156,18 @@ const Profile = () => {
       </View>
       <View className='flex-row mt-4 justify-center space-x-10'>
         <Image 
-          source={icons.profile}
-          className='w-6 h-6'
+          source={icons.facebook}
+          className='w-8 h-8'
           resizeMode='contain'
         />
         <Image 
-          source={icons.profile}
-          className='w-6 h-6'
+          source={icons.tiktok}
+          className='w-9 h-9'
           resizeMode='contain'
         />
         <Image 
-          source={icons.profile}
-          className='w-6 h-6'
+          source={icons.zalo}
+          className='w-9 h-9'
           resizeMode='contain'
         />
       </View>

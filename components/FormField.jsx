@@ -10,6 +10,10 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
     handleChangeText('')
   }
   
+  const containsPassword = (str) => {
+    return str.toLowerCase().includes("mật khẩu");
+  }
+  
   return (
     <View className={`space-y-2 ${otherStyles}`}>
       <View className='flex-row space-x-2'>
@@ -33,7 +37,7 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
           placeholder={placeholder}
           placeholderTextColor='#7b7b8b'
           onChangeText={handleChangeText}
-          secureTextEntry={ title === 'Password' && !showPassword}
+          secureTextEntry={ containsPassword(title) && !showPassword}
           onSubmitEditing={ title === 'Tìm kiếm địa điểm' ? onSubmit : null}
           returnKeyType={ title === 'Tìm kiếm địa điểm' ? 'search' : 'done'}
           multiline={title === 'Ghi chú'}
@@ -41,7 +45,7 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
           {...props}
         />
         
-        {title === 'Password' && (
+        {containsPassword(title) && (
           <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
           >

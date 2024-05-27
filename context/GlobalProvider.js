@@ -25,6 +25,15 @@ const GlobalProvider = ({ children }) => {
     }
   }
   
+  const refreshDataUser = async() => {
+    try {
+      const user = await userApi.getMe();
+      setUser(user)
+    } catch (error) {
+      console.log('winter-error', error)
+    }
+  }
+  
   useEffect(() => {
     fetchDataGetMe();
   }, [isLoggedIn])
@@ -36,7 +45,8 @@ const GlobalProvider = ({ children }) => {
         setIsLoggedIn,
         user,
         setUser,
-        isLoading
+        isLoading,
+        refreshDataUser
       }}
     >
       {children}

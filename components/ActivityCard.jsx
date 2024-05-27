@@ -12,7 +12,7 @@ import { bookingApi } from '../services/api'
 const ActivityCard = ({ activity }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false)
-  const { id, createdAt, duration, note, dateTime, totalPrice, status, address, bookingPackage, bookingExtraService } = activity;
+  const { id, createdAt, duration, note, dateTime, totalPrice, status, address, bookingPackage, paymentStatus } = activity;
   const { service } = bookingPackage[0].package;
   const { body: statusBody, color: statusColor } = colorStatus(status);
   const iconURL = `${REACT_APP_BASE_ICON_URL}/${service.icon}`
@@ -47,7 +47,7 @@ const ActivityCard = ({ activity }) => {
             <Text className='text-base text-white font-psemibold'>{service.name}</Text>
           </View>
           <View>
-            <Text className='text-base text-white font-psemibold'>{fCurrency(Number(totalPrice))}</Text>
+            <Text className='text-base text-white font-psemibold'>{paymentStatus === 'KPAY' ? fCurrency(Number(0)) : fCurrency(Number(totalPrice))}</Text>
           </View>
         </View>
         <View className='space-y-1 mt-2'>
