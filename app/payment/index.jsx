@@ -15,7 +15,7 @@ import { images, icons } from '../../constants';
 import { fCurrency } from '../../utils/format-currency';
 
 const Payment = () => {
-  const { user, setUser } = useGlobalContext();
+  const { user, updateUser } = useGlobalContext();
   const [amount, setAmount] = useState('');
   const [isPay, setIsPay] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +43,7 @@ const Payment = () => {
       });
       if(presentSheet.error && presentSheet.error.code !== "Canceled") return Alert.alert(presentSheet.error.message)
       const payment = await userApi.paymentSuccess(Number(amount));
-      setUser({...user, kPay: Number(payment)});
+      updateUser({kPay: Number(payment)});
       setAmount('');
       setIsPay(false);
     } catch (error) {

@@ -6,30 +6,31 @@ import { Link, router } from 'expo-router'
 import { images } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
+import { authApi } from '../../services/api'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const SignUp = () => {
+  const { setUser, setIsLoggedIn } = useGlobalContext()
   const [form, setForm] = useState({
-    username: '',
-    email: '',
+    name: '',
+    phoneCode: '84',
+    phoneNumber: '',
     password: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   
-  const submit = () => {
-    if(!form.username || !form.email || !form.password) {
-      Alert.alert('Error', 'Please fill in all fields')
+  const submit = async () => {
+    if(!form.name || !form.phoneNumber || !form.password) {
+      Alert.alert('Lỗi', 'Hãy điền đầy đủ thông tin')
     }
     setIsSubmitting(true)
     
     try {
-      // const result = 
-      console.log('winter-user', form)
-      
-      // set it to global state
-      
-      router.replace('/home')
+      await authApi.register(form)
+      Alert.alert('Thành công', 'Đăng ký thành công')
     } catch (error) {
-      Alert.alert('Error', error.message)
+      Alert.alert('Lỗi', error.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -42,39 +43,39 @@ const SignUp = () => {
           <Image 
             source={images.logo}
             resizeMode='contain'
-            className='w-[115px] h-[35px]'
+            className='w-[115px] h-[115px]'
           />
           
           <Text
             className='text-2xl text-white text-semibold mt-10 font-psemibold'
           >
-            Sign up to Kleenix
+            Đăng ký Kleenix
           </Text>
           
           <FormField 
-            title="Username"
-            value={form.username}
-            handleChangeText={(e) => setForm({ ...form, username: e})}
+            title="Họ và tên"
+            value={form.name}
+            handleChangeText={(e) => setForm({ ...form, name: e})}
             otherStyles='mt-7'
           />
           
           <FormField 
-            title="Email"
-            value={form.email}
-            handleChangeText={(e) => setForm({ ...form, email: e})}
+            title="Số điện thoại"
+            value={form.phoneNumber}
+            handleChangeText={(e) => setForm({ ...form, phoneNumber: e})}
             otherStyles='mt-7'
-            keyboardType="email-address"
+            keyboardType='number-pad'
           />
           
           <FormField 
-            title="Password"
+            title="Mật khẩu"
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e})}
             otherStyles='mt-7'
           />
           
           <CustomButton 
-            title='Sign Up'
+            title='Đăng ký'
             handlePress={submit}
             containerStyles='mt-7'
             isLoading={isSubmitting}
@@ -84,9 +85,9 @@ const SignUp = () => {
             <Text
               className='text-lg text-gray-100 font-pregular'
             >
-              Have an account already?
+              Đã có tài khoản?
             </Text>
-            <Link href="/sign-in" className='text-lg font-psemibold text-secondary'>Sign In</Link>
+            <Link href="/sign-in" className='text-lg font-psemibold text-secondary'>Đăng nhập</Link>
           </View>
         </View>
       </ScrollView>

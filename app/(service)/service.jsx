@@ -25,14 +25,14 @@ import PaymentStatusModal from '../../components/PaymentStatusModal'
 
 const Service = () => {
   const iconBaseURL = `${REACT_APP_BASE_ICON_URL}`
+  const { user, authenticated } = useGlobalContext()
   const { id: serviceId } = useLocalSearchParams()
   const [isLoading, setIsLoading] = useState(false)
-  const { data: service, isLoading: loadingService } = useFetchData(serviceApi.getListPackage(serviceId));
-  const { data: extraServices, isLoading: loadingExtraService } = useFetchData(extraServiceApi.getListExtraService());
-  const { data: listAddress, isLoading: loadingAddress } = useFetchData(addressApi.getListAddress());
-  const { data: listUsablePromotion, isLoading: loadingPromotion } = useFetchData(promotionApi.getListUsable());
+  const { data: service, isLoading: loadingService } = useFetchData(authenticated ? serviceApi.getListPackage(serviceId) : null);
+  const { data: extraServices, isLoading: loadingExtraService } = useFetchData(authenticated ? extraServiceApi.getListExtraService() : null);
+  const { data: listAddress, isLoading: loadingAddress } = useFetchData(authenticated ? addressApi.getListAddress() : null);
+  const { data: listUsablePromotion, isLoading: loadingPromotion } = useFetchData(authenticated ? promotionApi.getListUsable() : null);
   const { name, packages } = service;
-  const { user } = useGlobalContext()
   const [selectedPackage, setSelectedPackage] = useState(null)
   const [form, setForm] = useState({
     listPackage: [],

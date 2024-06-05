@@ -1,33 +1,24 @@
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native'
-import { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-
-import { useNavigation } from '@react-navigation/native'
-import { DrawerActions } from '@react-navigation/native'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 
 import { icons } from '../../constants'
 import InfoBox from '../../components/InfoBox'
 
-import { AntDesign } from '@expo/vector-icons';
 import HorizontalLine from '../../components/HorizontalLine'
-import { authApi } from '../../services/api'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const Profile = () => {
-  const navigation = useNavigation()
-  const { user, setUser, setIsLoggedIn } = useGlobalContext()
+  const { logout, user } = useGlobalContext()
   
-  const logout = async () => {
-    // await authApi.logout()
-    await AsyncStorage.removeItem('accessToken')
-    await AsyncStorage.removeItem('refreshToken')
-    setUser(null)
-    setIsLoggedIn(false)
-    router.replace('sign-in')
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.replace('sign-in')
+    } catch (error) {
+      console.log('logout-error', error.message)
+    }
   }
   
   return (
@@ -35,7 +26,7 @@ const Profile = () => {
       <View className='w-full justify-center items-center mt-6 px-4'>
         <View className='w-full flex-row justify-end mb-10'>
           <TouchableOpacity
-            onPress={logout}
+            onPress={handleLogout}
           >
             <Image 
               source={icons.logout}

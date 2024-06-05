@@ -21,7 +21,7 @@ const Verification = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [timeLeft, setTimeLeft] = useState(null);
-  const { setUser, setIsLoggedIn } = useGlobalContext();
+  const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
   useEffect(() => {
     let interval;
@@ -69,10 +69,10 @@ const Verification = () => {
         <Text
           className='text-2xl text-white text-semibold mt-10 font-psemibold'
         >
-          Verification
+          Xác minh số điện thoại
         </Text>
         <Text className='font-pmedium text-sm text-gray-100 mt-2'>
-          We've send you the verification code on {"098867850"}. Please enter the code below
+          Chúng tôi đã gửi mã xác minh đến số điện thoại { user && user.phoneNumber }. Hãy nhập mã xác minh để tiếp tục
         </Text>
         <View 
           className='flex-row justify-between mt-10 space-x-4 w-full items-center'
@@ -92,7 +92,7 @@ const Verification = () => {
         
         <View className='flex-row justify-center mt-4'>
           <Text className='font-pmedium text-sm text-gray-100 mt-2'>
-            Resend code in {' '}
+            Gửi lại sau: {' '}
           </Text>
           {timeLeft !== null ? (
             <Text className='font-pmedium text-sm text-gray-50 mt-2'>

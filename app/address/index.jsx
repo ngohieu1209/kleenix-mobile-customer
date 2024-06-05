@@ -15,8 +15,10 @@ import { addressApi } from '../../services/api'
 import LoadingScreen from '../../components/LoadingScreen'
 
 const Address = () => {
+  const { authenticated } = useGlobalContext()
+
   const [isHandleLoading, setIsHandleLoading] = useState(false);
-  const { data: listAddress, refetch } = useFetchData(addressApi.getListAddress());
+  const { data: listAddress, refetch } = useFetchData(authenticated ? addressApi.getListAddress() : null);
   const [refreshing, setRefreshing] = useState(false);
   const [isVisibleModalLocation, setIsVisibleModalLocation] = useState(false)
   const [selectedId, setSelectedId] = useState(null)

@@ -18,7 +18,8 @@ const useFetchData = (fn) => {
   }
   
   useEffect(() => {
-    fetchData()
+    if(fn)
+      fetchData()
   }, [])
   
   const refetch = () => fetchData()

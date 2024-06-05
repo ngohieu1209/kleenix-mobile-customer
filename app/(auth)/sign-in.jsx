@@ -12,11 +12,12 @@ import { authApi } from '../../services/api'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SignIn = () => {
-  const { setUser, setIsLoggedIn } = useGlobalContext()
+  const { login } = useGlobalContext();
+  
   const [form, setForm] = useState({
     phoneCode: '84',
-    phoneNumber: '956895689',
-    password: '123456'
+    phoneNumber: '',
+    password: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   
@@ -27,18 +28,10 @@ const SignIn = () => {
     setIsSubmitting(true)
     
     try {
-      const data = await authApi.login(form)
-      setUser(data.result.user);
-      await AsyncStorage.setItem('accessToken', data.result.token.accessToken)
-      await AsyncStorage.setItem('refreshToken', data.result.token.refreshToken)
-      setIsLoggedIn(true)
-      if(!data.result.user.verify) {
-        return router.replace('/verification')
-      } else {
-        return router.replace('/home')
-      }
+      await login(form.phoneNumber, form.password)
     } catch (error) {
-      Alert.alert('Error', error.message)
+      console.log('winter-error', error)
+      Alert.alert('Lỗi', error.message)
     } finally {
       setIsSubmitting(false)
     }
@@ -63,20 +56,20 @@ const SignIn = () => {
           <FormField 
             title="Số điện thoại"
             value={form.phoneNumber}
-            handleChangeText={(e) => setForm({ ...form, email: e})}
+            handleChangeText={(e) => setForm({ ...form, phoneNumber: e})}
             otherStyles='mt-7'
             keyboardType='number-pad'
           />
           
           <FormField 
-            title="Password"
+            title="Mật khẩu"
             value={form.password}
             handleChangeText={(e) => setForm({ ...form, password: e})}
             otherStyles='mt-7'
           />
           
           <CustomButton 
-            title='Sign In'
+            title='Đăng nhập'
             handlePress={submit}
             containerStyles='mt-7'
             isLoading={isSubmitting}
@@ -86,9 +79,9 @@ const SignIn = () => {
             <Text
               className='text-lg text-gray-100 font-pregular'
             >
-              Don't have account?
+              Bạn chưa có tài khoản?
             </Text>
-            <Link href="/verification" className='text-lg font-psemibold text-secondary'>Sign Up</Link>
+            <Link href="/sign-up" className='text-lg font-psemibold text-secondary'>Đăng ký</Link>
           </View>
         </View>
       </ScrollView>

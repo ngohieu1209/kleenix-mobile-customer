@@ -5,11 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const authApi = {
   login: async (loginData) => {
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/login`, loginData);
-    const token = data.result.token
-    await AsyncStorage.setItem('accessToken', token.accessToken);
-    await AsyncStorage.setItem('refreshToken', token.refreshToken);
+    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/login`, { ...loginData, phoneNumber: Number(loginData.phoneNumber).toString() });
     return data;
+  },
+  register: async (registerData) => {
+    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/register`, { ...registerData, phoneNumber: Number(registerData.phoneNumber).toString() });
+    return data.result;
   },
   logout: async() => {
     const { data } = await axiosInstance.post(endpoints.auth.logout)

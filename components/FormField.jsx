@@ -31,8 +31,14 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
       <View 
         className={`${(title === 'Ghi chú') ? 'h-32 items-start' : 'h-16 items-center'} border-2 border-black-200 w-full px-4 bg-black-100 rounded-2xl focus:border-secondary flex-row`}
       >
+        {title === "Số điện thoại" && (
+          <View className='mb-0.5'>
+            <Text className="text-white font-psemibold text-base border-r-2 border-gray-600 w-full mr-2">+84</Text>
+          </View>
+        )}
+      
         <TextInput 
-          className='flex-1 text-white font-psemibold text-base'
+          className={`flex-1 text-white font-psemibold text-base ml-2`}
           value={value}
           placeholder={placeholder}
           placeholderTextColor='#7b7b8b'

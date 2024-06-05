@@ -30,7 +30,8 @@
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      ],
+      "package": "com.milobackkhoa.kleenix"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,6 +39,14 @@
     "plugins": [
       "expo-router",
       "expo-location"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "92b479b3-e79e-4ee2-a8bb-3b6f56cb441d"
+      }
+    }
   }
 }

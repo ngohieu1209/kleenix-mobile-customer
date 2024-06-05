@@ -17,9 +17,9 @@ import LoadingScreen from '../../components/LoadingScreen'
 
 
 const Home = () => {
-  const { user, setUser, setIsLoggedIn, refreshDataUser, isLoading } = useGlobalContext()
-  const { data: listService, isLoading: loadingService, refetch } = useFetchData(serviceApi.getListService());
-  const { data: listPromotion, isLoading: loadingPromotion, refetch: refetchPromotion } = useFetchData(promotionApi.getList());
+  const { user, loading, authenticated } = useGlobalContext()
+  const { data: listService, isLoading: loadingService, refetch } = useFetchData(authenticated ? serviceApi.getListService() : null);
+  const { data: listPromotion, isLoading: loadingPromotion, refetch: refetchPromotion } = useFetchData(authenticated ? promotionApi.getList() : null);
   
   const [refreshing, setRefreshing] = useState(false);
   
@@ -27,7 +27,7 @@ const Home = () => {
     setRefreshing(true);
     await refetch();
     await refetchPromotion();
-    await refreshDataUser();
+    // await refreshDataUser();
     setRefreshing(false);
   }
   
@@ -35,7 +35,7 @@ const Home = () => {
   //   onRefresh();
   // }, [user])
   
-  if(isLoading) {
+  if(loading) {
     return <LoadingScreen />
   }
   

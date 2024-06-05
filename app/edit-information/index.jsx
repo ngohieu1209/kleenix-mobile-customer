@@ -17,7 +17,7 @@ import ChangePasswordModal from '../../components/ChangePasswordModal'
 import CustomButton from '../../components/CustomButton'
 
 const EditInformation = () => {
-  const { user, setUser } = useGlobalContext();
+  const { user, updateUser } = useGlobalContext();
   const [form, setForm] = useState({
     name: '',
   })
@@ -33,11 +33,10 @@ const EditInformation = () => {
     setIsHandleLoading(true)
     try {
       await userApi.editProfile(form)
-      setUser({
-        ...user,
+      updateUser({
         name: form.name
       })
-      router.replace('/profile')
+      router.replace('profile')
     } catch (error) {
       Alert.alert('Lỗi', 'Có lỗi xảy ra khi đổi tên')
     } finally {
