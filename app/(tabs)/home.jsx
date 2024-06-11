@@ -1,5 +1,6 @@
-import { View, Text, FlatList, Image, RefreshControl, Alert } from 'react-native'
-import { useEffect, useState } from 'react'
+import { View, Text, FlatList, Image, RefreshControl } from 'react-native'
+import { useEffect, useState, useCallback } from 'react'
+import { useFocusEffect } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
@@ -27,13 +28,21 @@ const Home = () => {
     setRefreshing(true);
     await refetch();
     await refetchPromotion();
-    // await refreshDataUser();
     setRefreshing(false);
   }
   
-  // useEffect(() => {
-  //   onRefresh();
-  // }, [user])
+  const refetchAll = async () => {
+    await refetch();
+    await refetchPromotion();
+  }
+  
+  useFocusEffect(
+    useCallback(() => {
+      if(authenticated) {
+        refetchAll();
+      }
+    }, [authenticated])
+  )
   
   if(loading) {
     return <LoadingScreen />

@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, Image, ScrollView, ActivityIndicator, ToastAndroid } from 'react-native';
 import React, { useState } from 'react';
 import { icons } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -24,13 +24,27 @@ const ChangePasswordModal = ({ visible, onClose, onSelect }) => {
   };
   
   const handleSubmit = async () => {
+    if(!form.oldPassword || !form.newPassword || !form.confirmPassword) {
+      ToastAndroid.show('Hãy điền đầy đủ thông tin', ToastAndroid.SHORT);
+      return
+    }
+    
+    if(form.newPassword !== form.confirmPassword) {
+      ToastAndroid.show('Xác nhận mật khẩu mới không khớp', ToastAndroid.SHORT);
+      return
+    }
+    
+    if(form.newPassword.length < 6) {
+      ToastAndroid.show('Mật khẩu phải có ít nhất 6 ký tự', ToastAndroid.SHORT);
+      return
+    }
     setIsLoading(true)
     try {
       await authApi.changePassword({ oldPassword: form.oldPassword, newPassword: form.newPassword })
       handleClose()
     } catch (error) {
       console.log('winter-log: ChangePasswordModal -> error', error)
-      Alert.alert('Lỗi', error.message)
+      ToastAndroid.show('Có lỗi xảy ra khi đổi mật khẩu', ToastAndroid.SHORT);
     } finally {
       setIsLoading(false)
     }

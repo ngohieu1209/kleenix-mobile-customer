@@ -1,10 +1,11 @@
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, Image, Alert } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, ImageBackground } from 'react-native'
 import React, { useState } from 'react'
 import { router } from 'expo-router'
 import * as Animatable from 'react-native-animatable'
 import { REACT_APP_BASE_ICON_URL } from '@env'
 import PromotionModal from './PromotionModal'
 import { promotionApi } from '../services/api'
+import Toast from 'react-native-toast-message'
 
 const zoomIn = {
   0: {
@@ -36,8 +37,11 @@ const PromotionItem = ({ activeItem, item }) => {
       await promotionApi.claim(item.id);
       router.replace('/home')
     } catch (error) {
-      Alert.alert('Lỗi', error.message)
-      console.log('winter-promotion-error', error)  
+      console.log('promotion-error', error)
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Có lỗi xảy ra khi nhận khuyến mãi',
+      });
     } finally {
       setIsLoading(false)
     }

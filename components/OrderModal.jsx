@@ -53,7 +53,7 @@ const OrderModal = ({ visible, onClose, onSelect, order, address, user, service,
               {/* ĐỊA CHỈ */}
               <HorizontalLine />
               <Text className='text-sm text-gray-100 font-pregular mb-1'>Địa chỉ</Text>
-              <Text className='text-base text-white font-pmedium'>{fAddress(address)}</Text>
+              <Text className='text-base text-white font-pmedium'>{address ? fAddress(address) : 'Ấn vào đây để thiết lập địa chỉ mặc định'}</Text>
               {/* THỜI GIAN BẮT ĐẦU */}
               <HorizontalLine />
               <Text className='text-sm text-gray-100 font-pregular mb-1'>Thời gian bắt đầu</Text>

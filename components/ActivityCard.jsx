@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { REACT_APP_BASE_ICON_URL } from '@env'
 import { router } from 'expo-router'
@@ -8,6 +8,7 @@ import { fMinutesToHours, fDateTime } from '../utils/format-time'
 import colorStatus from '../constants/color-status'
 import BookingModal from './BookingModal'
 import { bookingApi } from '../services/api'
+import Toast from 'react-native-toast-message'
 
 const ActivityCard = ({ activity }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -23,8 +24,11 @@ const ActivityCard = ({ activity }) => {
       await bookingApi.cancelBooking(id);
       router.replace('/activities')
     } catch (error) {
-      Alert.alert('Lỗi', error.message)
-      console.log('winter-booking-error', error)  
+      console.log('cancel-booking-error', error)
+      Toast.show({
+        type: 'error',
+        text1: 'Có lỗi xảy ra khi hủy đơn',
+      });
     } finally {
       setIsLoading(false)
     }

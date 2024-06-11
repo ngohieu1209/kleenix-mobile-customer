@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Alert } from "react-native"
+import Toast from "react-native-toast-message"
 
 const useFetchData = (fn) => {
   const [data, setData] = useState([])
@@ -11,7 +11,10 @@ const useFetchData = (fn) => {
       const response = await fn
       setData(response)
     } catch (error) {
-      Alert.alert('Error', error.message)
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Có lỗi xảy ra',
+      });
     } finally {
       setIsLoading(false)
     }

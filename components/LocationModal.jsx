@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, Image, Alert, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { icons } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -161,11 +161,14 @@ const LocationModal = ({ visible, onClose, onSelect }) => {
               />
             )}
             {ward && (
-              <FormField 
-                value={form.street}
-                placeholder='Số nhà, tên đường ...'
-                handleChangeText={(e) => setForm({ ...form, street: e })}
-              />
+              <View>
+                <FormField
+                  title='Số nhà, tên đường'
+                  value={form.street}
+                  placeholder='Số nhà, tên đường ...'
+                  handleChangeText={(e) => setForm({ ...form, street: e })}
+                />
+              </View>
             )}
           </View>
         </ScrollView>

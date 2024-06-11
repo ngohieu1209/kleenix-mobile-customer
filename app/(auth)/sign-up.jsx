@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, Image, Alert } from 'react-native'
+import { ScrollView, View, Text, Image } from 'react-native'
 import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link, router } from 'expo-router'
@@ -7,11 +7,10 @@ import { images } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { authApi } from '../../services/api'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useGlobalContext } from '../../context/GlobalProvider'
+
+import Toast from 'react-native-toast-message'
 
 const SignUp = () => {
-  const { setUser, setIsLoggedIn } = useGlobalContext()
   const [form, setForm] = useState({
     name: '',
     phoneCode: '84',
@@ -22,15 +21,27 @@ const SignUp = () => {
   
   const submit = async () => {
     if(!form.name || !form.phoneNumber || !form.password) {
-      Alert.alert('Lỗi', 'Hãy điền đầy đủ thông tin')
+      Toast.show({
+        type: 'error',
+        text1: 'Hãy điền đầy đủ thông tin',
+      });
+      return
     }
     setIsSubmitting(true)
     
     try {
       await authApi.register(form)
-      Alert.alert('Thành công', 'Đăng ký thành công')
+      Toast.show({
+        type: 'success',
+        text1: 'Đăng ký thành công',
+      });
+      router.replace('sign-in')
     } catch (error) {
-      Alert.alert('Lỗi', error.message)
+      console.log('register-error', error)
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Đăng ký thất bại. Vui lòng thử lại sau',
+      });
     } finally {
       setIsSubmitting(false)
     }

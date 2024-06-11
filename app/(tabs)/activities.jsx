@@ -1,5 +1,6 @@
 import { View, Text, FlatList, Image, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { useFocusEffect } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import images from '../../constants/images'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -14,6 +15,7 @@ import EmptyState from '../../components/EmptyState'
 import ActivityCard from '../../components/ActivityCard'
 import FilterDateTimePicker from '../../components/FilterDateTimePicker'
 import icons from '../../constants/icons'
+import { useGlobalContext } from '../../context/GlobalProvider'
 
 const tabs = [
   {
@@ -58,9 +60,16 @@ const Activities = () => {
     setIsFilter(false);
   }
   
-  useEffect(() => {
-    refetch()
-  }, [status, startDate, endDate])
+  // useEffect(() => {
+  // }, [status, startDate, endDate])
+  
+  useFocusEffect(
+    useCallback(() => {
+      if(authenticated) {
+        refetch();
+      }
+    }, [authenticated, status, startDate, endDate])
+  )
   
   const onRefresh = async () => {
     setRefreshing(true);

@@ -11,7 +11,10 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
   }
   
   const containsPassword = (str) => {
-    return str.toLowerCase().includes("mật khẩu");
+    if(str) {
+      return str.toLowerCase().includes("mật khẩu");
+    }
+    return false;
   }
   
   return (
@@ -29,7 +32,7 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
         </Text>
       </View>
       <View 
-        className={`${(title === 'Ghi chú') ? 'h-32 items-start' : 'h-16 items-center'} border-2 border-black-200 w-full px-4 bg-black-100 rounded-2xl focus:border-secondary flex-row`}
+        className={`${(title === 'Ghi chú' || title === 'Nhận xét') ? 'h-auto items-center' : 'h-16 items-center'} border-2 border-black-200 w-full px-4 bg-black-100 rounded-2xl focus:border-secondary flex-row`}
       >
         {title === "Số điện thoại" && (
           <View className='mb-0.5'>
@@ -46,8 +49,8 @@ const FormField = ({ title, icon, value, placeholder, handleChangeText, otherSty
           secureTextEntry={ containsPassword(title) && !showPassword}
           onSubmitEditing={ title === 'Tìm kiếm địa điểm' ? onSubmit : null}
           returnKeyType={ title === 'Tìm kiếm địa điểm' ? 'search' : 'done'}
-          multiline={title === 'Ghi chú'}
-          numberOfLines={title === 'Ghi chú' ? 4 : 1}
+          multiline={title === 'Ghi chú' || title === 'Nhận xét'}
+          numberOfLines={title === 'Ghi chú' || title === 'Nhận xét' ? 4 : 1}
           {...props}
         />
         

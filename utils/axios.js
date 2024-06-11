@@ -50,5 +50,9 @@ export const endpoints = {
     list: '/promotion/list',
     usable: '/promotion/list/usable',
     claim: '/promotion/claim'
+  },
+  feedback: {
+    detail: '/feedback',
+    new: '/feedback/new'
   }
 };

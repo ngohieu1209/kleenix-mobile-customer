@@ -8,6 +8,7 @@ import { icons } from '../../constants'
 import InfoBox from '../../components/InfoBox'
 
 import HorizontalLine from '../../components/HorizontalLine'
+import Toast from 'react-native-toast-message';
 
 const Profile = () => {
   const { logout, user } = useGlobalContext()
@@ -19,6 +20,13 @@ const Profile = () => {
     } catch (error) {
       console.log('logout-error', error.message)
     }
+  }
+  
+  const showToast = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Đăng ký thành công',
+    });
   }
   
   return (
@@ -124,6 +132,7 @@ const Profile = () => {
         <HorizontalLine />
         <TouchableOpacity
           activeOpacity={0.7}
+          onPress={showToast}
         >
           <View className='w-full h-6 rounded-lg flex-row justify-between'>
             <View className='flex-row justify-center items-center space-x-2 ml-2'>

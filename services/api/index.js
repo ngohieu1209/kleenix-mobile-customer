@@ -5,3 +5,4 @@ export { default as addressApi } from './address';
 export { default as authApi } from './auth';
 export { default as bookingApi } from './booking';
 export { default as promotionApi } from './promotion';
+export { default as feedbackApi } from './feedback';

@@ -1,8 +1,7 @@
-import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { router } from 'expo-router'
 
-import { icons } from '../../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { authApi } from '../../services/api'
 import { useGlobalContext } from '../../context/GlobalProvider'
@@ -10,7 +9,7 @@ import { useGlobalContext } from '../../context/GlobalProvider'
 import BackButtonHeader from '../../components/BackButtonHeader'
 import EnterNumber from '../../components/EnterNumber'
 import CustomButton from '../../components/CustomButton'
-import LoadingModal from '../../components/LoadingModal'
+import Toast from 'react-native-toast-message'
 
 const Verification = () => {
   const [form, setForm] = useState({
@@ -20,8 +19,8 @@ const Verification = () => {
     code4: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(null);
-  const { user, setUser, setIsLoggedIn } = useGlobalContext();
+  const [timeLeft, setTimeLeft] = useState(120);
+  const { user, updateUser } = useGlobalContext();
 
   useEffect(() => {
     let interval;
@@ -42,21 +41,29 @@ const Verification = () => {
   
   const submit = async () => {
     if(!form.code1 || !form.code2 || !form.code3 || !form.code4) {
-      Alert.alert('Lỗi', 'Hãy điền đầy đủ mã xác thực')
+      Toast.show({
+        type: 'error',
+        text1: 'Hãy điền đầy đủ mã',
+      });
+      return
     }
     setIsSubmitting(true)
     
     try {
       const data = await authApi.verify(form)
-      setUser(data);
-      setIsLoggedIn(true)
+      updateUser({
+        ...data
+      })
       if(!data.verify) {
         return router.replace('/verification')
       } else {
         return router.replace('/home')
       }
     } catch (error) {
-      Alert.alert('Lỗi', error.message)
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Xác thực thất bại. Vui lòng thử lại sau',
+      });
     } finally {
       setIsSubmitting(false)
     }
@@ -72,7 +79,7 @@ const Verification = () => {
           Xác minh số điện thoại
         </Text>
         <Text className='font-pmedium text-sm text-gray-100 mt-2'>
-          Chúng tôi đã gửi mã xác minh đến số điện thoại { user && user.phoneNumber }. Hãy nhập mã xác minh để tiếp tục
+          Chúng tôi đã gửi mã xác minh đến số điện thoại 0{ user && user.phoneNumber }. Hãy nhập mã xác minh để tiếp tục
         </Text>
         <View 
           className='flex-row justify-between mt-10 space-x-4 w-full items-center'
@@ -92,7 +99,7 @@ const Verification = () => {
         
         <View className='flex-row justify-center mt-4'>
           <Text className='font-pmedium text-sm text-gray-100 mt-2'>
-            Gửi lại sau: {' '}
+            {timeLeft !== null ? 'Gửi lại sau: ' : 'Chưa nhận được tin nhắn? '}{' '}
           </Text>
           {timeLeft !== null ? (
             <Text className='font-pmedium text-sm text-gray-50 mt-2'>

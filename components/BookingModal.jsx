@@ -1,5 +1,5 @@
-import { View, Text, Modal, TouchableOpacity, Image, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import { View, Text, Modal, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { icons } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HorizontalLine from './HorizontalLine'
@@ -7,14 +7,38 @@ import { fDateTime } from '../utils/format-time'
 import { fCurrency } from '../utils/format-currency';
 import { fAddress } from '../utils/format-address';
 import { addMinutes } from 'date-fns';
+import FeedbackModal from './FeedbackModal';
+import { feedbackApi } from '../services/api';
 
 const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [bodyFeedback, setBodyFeedback] = useState(null);
+  const [isVisibleModalFeedback, setIsVisibleModalFeedback] = useState(false)
   const { id, createdAt, duration, note, dateTime, totalPrice, address, bookingPackage, bookingExtraService, status, paymentStatus, customerPromotion } = activity;
   const selectedPromotion = customerPromotion.length > 0 ? customerPromotion[0] : null;
+  
   const handleClose = () => {
     onClose();
   };
+  
+  const fetchDataFeedback = async () => {
+    setIsLoading(true);
+    try {
+      const data = await feedbackApi.getFeedback(id);
+      setBodyFeedback(data);
+    } catch (error) {
+      console.log('fetch feedback error', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+  
+  useEffect(() => {
+    if(!isVisibleModalFeedback) {
+      fetchDataFeedback();
+    }
+  }, [isVisibleModalFeedback])
+  
   return (
     <Modal animationType='slide' visible={visible}>
       <SafeAreaView className='flex-1 bg-primary h-full'>
@@ -220,7 +244,29 @@ const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
             </Text>
           </TouchableOpacity>
         )}
+        {(status === 'COMPLETED') && (
+          <TouchableOpacity
+            onPress={() => setIsVisibleModalFeedback(!isVisibleModalFeedback)}
+            activeOpacity={0.7}
+            className={`mx-3 rounded-xl min-h-[62px] justify-center items-center mt-4 mb-4 bg-secondary`}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color={'#1E1E2D'} size={32} />
+            ) : (
+              <Text className={`text-primary font-psemibold text-lg mx-4`}>
+                {bodyFeedback ? 'Xem đánh giá của bạn' : 'Gửi đánh giá'}
+              </Text>
+            )}
+          </TouchableOpacity>
+        )}
       </SafeAreaView>
+      <FeedbackModal
+        visible={isVisibleModalFeedback}
+        onClose={() => setIsVisibleModalFeedback(false)}
+        bookingId={id}
+        feedback={bodyFeedback}
+      />
     </Modal>
   );
 };

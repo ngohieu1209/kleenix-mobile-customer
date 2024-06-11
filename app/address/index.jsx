@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, Image, FlatList, RefreshControl } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Image, FlatList, RefreshControl } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -12,7 +12,7 @@ import AddressCard from '../../components/AddressCard'
 import LocationModal from '../../components/LocationModal'
 
 import { addressApi } from '../../services/api'
-import LoadingScreen from '../../components/LoadingScreen'
+import Toast from 'react-native-toast-message'
 
 const Address = () => {
   const { authenticated } = useGlobalContext()
@@ -36,8 +36,11 @@ const Address = () => {
     try {
       await addressApi.setDefault(id);
     } catch (error) {
-      Alert.alert('Error', 'Có lỗi xảy ra, vui lòng thử lại sau');
-      console.log('winter-set-default-address-error', error);
+      console.log('set-default-address-error', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Có lỗi xảy ra, vui lòng thử lại sau',
+      });
     } finally {
       setIsHandleLoading(false);
     }
@@ -48,8 +51,11 @@ const Address = () => {
     try {
       await addressApi.deleteAddress(id);
     } catch (error) {
-      Alert.alert('Error', 'Có lỗi xảy ra, vui lòng thử lại sau');
-      console.log('winter-delete-address-error', error);
+      console.log('delete-address-error', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Có lỗi xảy ra, vui lòng thử lại sau',
+      });
     } finally {
       setIsHandleLoading(false);
     }
@@ -67,7 +73,11 @@ const Address = () => {
       const data = await addressApi.newAddress(eventData)
       listAddress.push(data)
     } catch (error) {
-      Alert.alert('Lỗi', 'Có lỗi xảy ra khi thêm địa chỉ')
+      console.log('add-address-error', error)
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Có lỗi xảy ra, vui lòng thử lại sau',
+      })
     } finally {
       setIsHandleLoading(false)
     }

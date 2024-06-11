@@ -97,7 +97,7 @@ const GlobalProvider = ({ children }) => {
   const login = useCallback(async (phoneNumber, password) => {
     const data = {
       phoneCode: '84',
-      phoneNumber,
+      phoneNumber: Number(phoneNumber).toString(),
       password,
     };
 

@@ -32,6 +32,8 @@ import tiktok from "../assets/icons/tik-tok.png";
 import zalo from "../assets/icons/zalo.png";
 import giftBox from "../assets/icons/gift-box.png";
 import toDoList from "../assets/icons/to-do-list.png";
+import notification from "../assets/icons/notification.png";
+import bell from "../assets/icons/bell.png";
 
 export default {
   play,
@@ -68,4 +70,6 @@ export default {
   zalo,
   giftBox,
   toDoList,
+  notification,
+  bell,
 };

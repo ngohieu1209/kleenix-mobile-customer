@@ -1,14 +1,9 @@
-import { View, Text, Image, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { router } from 'expo-router'
-import { addressApi } from '../services/api'
 import DialogModal from './DialogModal'
-import LoadingModal from './LoadingModal'
 
 const AddressCard = ({ address: { id, province, district, ward, street, isDefault, long, lat }, onToggleOptions, showOptions, onDefault, onDelete }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
-  console.log('winter-address-card', id, province, district, ward, street, isDefault, long, lat)
   
   const handleCancel = () => {
     setIsModalVisible(false);

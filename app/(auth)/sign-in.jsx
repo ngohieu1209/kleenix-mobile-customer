@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, Image, Alert } from 'react-native'
+import { ScrollView, View, Text, Image } from 'react-native'
 import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Link, router } from 'expo-router'
@@ -8,8 +8,7 @@ import { useGlobalContext } from '../../context/GlobalProvider'
 import { images } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
-import { authApi } from '../../services/api'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import Toast from 'react-native-toast-message'
 
 const SignIn = () => {
   const { login } = useGlobalContext();
@@ -23,15 +22,22 @@ const SignIn = () => {
   
   const submit = async () => {
     if(!form.phoneNumber || !form.password) {
-      Alert.alert('Error', 'Please fill in all fields')
+      Toast.show({
+        type: 'error',
+        text1: 'Hãy điền đầy đủ thông tin',
+      });
+      return
     }
     setIsSubmitting(true)
     
     try {
       await login(form.phoneNumber, form.password)
     } catch (error) {
-      console.log('winter-error', error)
-      Alert.alert('Lỗi', error.message)
+      console.log('login-error', error)
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Đăng nhập thất bại. Vui lòng thử lại sau',
+      });
     } finally {
       setIsSubmitting(false)
     }

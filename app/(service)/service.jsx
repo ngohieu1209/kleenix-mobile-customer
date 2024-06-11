@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, Image } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { REACT_APP_BASE_ICON_URL } from '@env'
@@ -21,6 +21,8 @@ import { fMinutesToHours } from '../../utils/format-time'
 import LoadingScreen from '../../components/LoadingScreen'
 import UsablePromotionModal from '../../components/UsablePromotionModal'
 import PaymentStatusModal from '../../components/PaymentStatusModal'
+import Toast from 'react-native-toast-message'
+import { fAddress } from '../../utils/format-address'
 
 
 const Service = () => {
@@ -134,7 +136,11 @@ const Service = () => {
     const time = new Date(form.time);
     const dateTime = setSeconds(setMinutes(setHours(date, time.getHours()), time.getMinutes()), time.getSeconds());
     if(!isValidateTime(date, time)) {
-      Alert.alert('Thời gian không hợp lệ', 'Vui lòng chọn thời gian sau 2 tiếng từ hiện tại và trong khoảng từ 7h đến 21h.');
+      Toast.show({
+        type: 'error',
+        text1: 'Thời gian không hợp lệ',
+        text2: 'Vui lòng chọn thời gian sau 2 tiếng từ hiện tại và trong khoảng từ 7h đến 21h.'
+      });
     } else {
       setForm({ ...form, dateTime });
       setIsVisibleModalOrder(!isVisibleModalOrder)
@@ -147,8 +153,11 @@ const Service = () => {
       await bookingApi.newBooking(form);
       router.replace('/activities')
     } catch (error) {
-      Alert.alert('Error', error.message)
-      console.log('winter-booking-error', error)  
+      console.log('booking-error', error)  
+      Toast.show({
+        type: 'error',
+        text1: error.message || 'Đặt lịch thất bại. Vui lòng thử lại sau',
+      });
     } finally {
       setIsLoading(false)
     }
@@ -202,9 +211,13 @@ const Service = () => {
               Địa chỉ
             </Text>
           </View>
-          <View className='w-full py-4 px-4 bg-black-100 rounded-2xl justify-start items-start'>
-            <Text className='text-base text-white font-pmedium'>Văn phòng - Tầng 5, 2 Dương Đình Nghệ, Yên Hoà, Nam Từ Niêm, Hà Nội, Việt Nam</Text>
-          </View>
+          <TouchableOpacity 
+            className='w-full py-4 px-4 bg-black-100 rounded-2xl justify-start items-start'
+            activeOpacity={0.7}
+            onPress={() => router.push('address')}
+          >
+            <Text className='text-base text-white font-pmedium'>{listAddress.length > 0 ? fAddress(listAddress.find(item => item.isDefault)) : '-- Thêm địa chỉ mặc định --'}</Text>
+          </TouchableOpacity>
         </View>
         
         <View className='space-y-2 mt-8'>
@@ -406,8 +419,8 @@ const Service = () => {
       <TouchableOpacity
         onPress={submitContinue}
         activeOpacity={0.7}
-        className={`flex-row mx-3 rounded-xl min-h-[62px] justify-between items-center mt-4 mb-4 ${form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 || form.paymentStatus === null ? 'bg-gray-200 opacity-50' : 'bg-secondary'}`}
-        disabled={form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 || form.paymentStatus === null}
+        className={`flex-row mx-3 rounded-xl min-h-[62px] justify-between items-center mt-4 mb-4 ${form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 || form.paymentStatus === null || listAddress.length === 0? 'bg-gray-200 opacity-50' : 'bg-secondary'}`}
+        disabled={form.duration === 0 || form.date === null || form.time === null || form.totalPrice === 0 || form.paymentStatus === null || listAddress.length === 0}
       >
         <Text className={`text-primary font-psemibold text-lg mx-4`}>
           {fCurrency(form.totalPrice)}/{fMinutesToHours(form.duration)}

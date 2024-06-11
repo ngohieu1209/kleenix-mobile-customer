@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, Alert, Image, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
@@ -15,6 +15,7 @@ import { userApi } from '../../services/api'
 import LoadingScreen from '../../components/LoadingScreen'
 import ChangePasswordModal from '../../components/ChangePasswordModal'
 import CustomButton from '../../components/CustomButton'
+import Toast from 'react-native-toast-message'
 
 const EditInformation = () => {
   const { user, updateUser } = useGlobalContext();
@@ -38,7 +39,11 @@ const EditInformation = () => {
       })
       router.replace('profile')
     } catch (error) {
-      Alert.alert('Lỗi', 'Có lỗi xảy ra khi đổi tên')
+      console.log('edit-profile-error', error)
+      Toast.show({
+        type: 'error',
+        text1: 'Có lỗi xảy ra khi đổi tên',
+      });
     } finally {
       setIsHandleLoading(false)
     }
