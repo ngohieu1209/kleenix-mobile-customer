@@ -34,6 +34,8 @@ import giftBox from "../assets/icons/gift-box.png";
 import toDoList from "../assets/icons/to-do-list.png";
 import notification from "../assets/icons/notification.png";
 import bell from "../assets/icons/bell.png";
+import camera from "../assets/icons/camera.png";
+import gallery from "../assets/icons/gallery.png";
 
 export default {
   play,
@@ -72,4 +74,6 @@ export default {
   toDoList,
   notification,
   bell,
+  camera,
+  gallery,
 };

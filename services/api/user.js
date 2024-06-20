@@ -14,7 +14,20 @@ const userApi = {
     return data.result;
   },
   editProfile: async(eventData) => {
-    const { data } = await axiosInstance.patch(endpoints.user.edit, eventData);
+    const formData = new FormData();
+    if(eventData.avatar) {
+      formData.append('avatar', {
+        uri: eventData.avatar,
+        type: "image/png",
+        name: 'customer-avatar'
+      });
+    }
+    formData.append('name', eventData.name);
+    const { data } = await axiosInstance.patch(endpoints.user.edit, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     return data.result;
   }
 }

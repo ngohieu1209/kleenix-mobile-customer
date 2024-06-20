@@ -20,7 +20,11 @@ export const endpoints = {
     logout: '/auth/logout',
     verify: '/auth/verify',
     resendSMS: '/auth/resend-sms',
-    changePassword: '/auth/change-password'
+    changePassword: '/auth/change-password',
+    checkPhone: '/auth/check-phone-exist',
+    verifyForgotPassword: '/auth/verify-code-forgot-password',
+    resetPassword: '/auth/reset-password',
+    resendSMSForgotPassword: '/auth/resend-sms-forgot-password',
   },
   user: {
     getMe: '/customer/get-me',

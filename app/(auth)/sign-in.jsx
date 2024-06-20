@@ -74,6 +74,10 @@ const SignIn = () => {
             otherStyles='mt-7'
           />
           
+          <View className='justify-end pt-5 flex-row gap-2'>
+            <Link href="/forgot-password" className='text-sm font-psemibold text-secondary'>Quên mật khẩu</Link>
+          </View>
+          
           <CustomButton 
             title='Đăng nhập'
             handlePress={submit}

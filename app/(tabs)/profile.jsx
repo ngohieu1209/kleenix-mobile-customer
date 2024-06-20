@@ -1,6 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { REACT_APP_BASE_ICON_URL } from '@env'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 
@@ -11,6 +12,7 @@ import HorizontalLine from '../../components/HorizontalLine'
 import Toast from 'react-native-toast-message';
 
 const Profile = () => {
+  const iconBaseURL = `${REACT_APP_BASE_ICON_URL}`
   const { logout, user } = useGlobalContext()
   
   const handleLogout = async () => {
@@ -45,11 +47,19 @@ const Profile = () => {
         </View>
         
         <View className='w-16 h-16 border border-secondary rounded-lg justify-center items-center'>
-          <Image 
-            source={icons.profile}
-            className='w-[90%] h-[90%] rounded-lg'
-            resizeMode='cover'
-          />
+          {user && user.avatar ? (
+            <Image 
+              source={{ uri: `${iconBaseURL}/${user.avatar}` }}
+              className='w-[90%] h-[90%] rounded-lg'
+              resizeMode='cover'
+            />
+          ) : (
+            <Image 
+              source={icons.profile}
+              className='w-[90%] h-[90%] rounded-lg'
+              resizeMode='cover'
+            />
+          )}
         </View>
         
         <InfoBox 

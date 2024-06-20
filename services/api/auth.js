@@ -28,7 +28,24 @@ const authApi = {
   changePassword: async(eventData) => {
     const { data } = await axiosInstance.post(endpoints.auth.changePassword, eventData)
     return data.result
-  }
+  },
+  checkPhoneExist: async (eventData) => {
+    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/check-phone-exist`, { phoneNumber: Number(eventData.phoneNumber).toString() });
+    return data.result;
+  },
+  verifyCodeForgotPassword: async (phoneNumber, eventData) => {
+    const code = eventData.code1 + eventData.code2 + eventData.code3 + eventData.code4;
+    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/verify-code-forgot-password`, { phoneNumber: Number(phoneNumber).toString(), code: code });
+    return data.result;
+  },
+  resetPassword: async (eventData) => {
+    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/reset-password`, eventData);
+    return data.result;
+  },
+  resendSMSForgotPassword: async (eventData) => {
+    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/resend-sms-forgot-password`, { phoneNumber: Number(eventData.phoneNumber).toString()});
+    return data.result;
+  },
 }
 
 export default authApi;
