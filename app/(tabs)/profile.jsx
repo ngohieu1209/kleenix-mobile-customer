@@ -1,7 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { REACT_APP_BASE_ICON_URL } from '@env'
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 
@@ -12,7 +12,7 @@ import HorizontalLine from '../../components/HorizontalLine'
 import Toast from 'react-native-toast-message';
 
 const Profile = () => {
-  const iconBaseURL = `${REACT_APP_BASE_ICON_URL}`
+  const iconBaseURL = `${EXPO_PUBLIC_BASE_ICON_URL}`
   const { logout, user } = useGlobalContext()
   
   const handleLogout = async () => {

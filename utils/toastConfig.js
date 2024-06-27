@@ -9,17 +9,16 @@ const toastConfig = {
   success: (props) => (
     <BaseToast
       {...props}
-      // style={{ backgroundColor: '#FFEFCA', borderLeftColor: 'green', height: 'auto' }}
-      style={{ backgroundColor: 'rgba(50, 50, 50, 0.6)', borderLeftColor: 'green', height: 'auto' }}
+      style={{ backgroundColor: '#2D3250', borderLeftColor: 'green', height: 'auto' }}
       contentContainerStyle={{ paddingVertical: 8 }}
       text1Style={{
-        fontSize: 18,
+        fontSize: 15,
         // color: '#008A64'
         color: '#fff'
       }}
       text1NumberOfLines={3}
       text2Style={{
-        fontSize: 15
+        fontSize: 12
       }}
       text2NumberOfLines={3}
     />
@@ -31,16 +30,16 @@ const toastConfig = {
   error: (props) => (
     <ErrorToast
       {...props}
-      style={{ backgroundColor: 'rgba(50, 50, 50, 0.6)', borderLeftColor: 'red', height: 'auto' }}
+      style={{ backgroundColor: '#2D3250', borderLeftColor: 'red', height: 'auto' }}
       contentContainerStyle={{ paddingVertical: 8 }}
       text1Style={{
-        fontSize: 18,
+        fontSize: 15,
         // color: '#B10000'
         color: '#fff'
       }}
       text1NumberOfLines={3}
       text2Style={{
-        fontSize: 15
+        fontSize: 12
       }}
       text2NumberOfLines={3}
     />

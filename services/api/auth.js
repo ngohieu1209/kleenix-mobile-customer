@@ -1,15 +1,15 @@
 import axios from 'axios';
 import axiosInstance, { endpoints } from '../../utils/axios';
-import { REACT_APP_API_URL } from '@env';
+import { EXPO_PUBLIC_API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const authApi = {
   login: async (loginData) => {
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/login`, { ...loginData, phoneNumber: Number(loginData.phoneNumber).toString() });
+    const { data } = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/login`, { ...loginData, phoneNumber: Number(loginData.phoneNumber).toString() });
     return data;
   },
   register: async (registerData) => {
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/register`, { ...registerData, phoneNumber: Number(registerData.phoneNumber).toString() });
+    const { data } = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/register`, { ...registerData, phoneNumber: Number(registerData.phoneNumber).toString() });
     return data.result;
   },
   logout: async() => {
@@ -30,20 +30,20 @@ const authApi = {
     return data.result
   },
   checkPhoneExist: async (eventData) => {
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/check-phone-exist`, { phoneNumber: Number(eventData.phoneNumber).toString() });
+    const { data } = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/check-phone-exist`, { phoneNumber: Number(eventData.phoneNumber).toString() });
     return data.result;
   },
   verifyCodeForgotPassword: async (phoneNumber, eventData) => {
     const code = eventData.code1 + eventData.code2 + eventData.code3 + eventData.code4;
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/verify-code-forgot-password`, { phoneNumber: Number(phoneNumber).toString(), code: code });
+    const { data } = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/verify-code-forgot-password`, { phoneNumber: Number(phoneNumber).toString(), code: code });
     return data.result;
   },
   resetPassword: async (eventData) => {
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/reset-password`, eventData);
+    const { data } = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/reset-password`, eventData);
     return data.result;
   },
   resendSMSForgotPassword: async (eventData) => {
-    const { data } = await axios.post(`${REACT_APP_API_URL}/auth/resend-sms-forgot-password`, { phoneNumber: Number(eventData.phoneNumber).toString()});
+    const { data } = await axios.post(`${EXPO_PUBLIC_API_URL}/auth/resend-sms-forgot-password`, { phoneNumber: Number(eventData.phoneNumber).toString()});
     return data.result;
   },
 }

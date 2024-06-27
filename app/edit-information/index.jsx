@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image, ActivityIndicator, Toa
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { REACT_APP_BASE_ICON_URL } from '@env'
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 import { icons } from '../../constants'
@@ -18,7 +18,7 @@ import CustomButton from '../../components/CustomButton'
 import Toast from 'react-native-toast-message'
 
 const EditInformation = () => {
-  const iconBaseURL = `${REACT_APP_BASE_ICON_URL}`
+  const iconBaseURL = `${EXPO_PUBLIC_BASE_ICON_URL}`
   const { user, updateUser } = useGlobalContext();
   const [form, setForm] = useState({
     name: '',

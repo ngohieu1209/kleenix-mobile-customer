@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { REACT_APP_API_URL } from '@env';
+import { EXPO_PUBLIC_API_URL } from '@env';
 import axios from 'axios';
 
 // ----------------------------------------------------------------------
-const axiosInstance = axios.create({ baseURL: REACT_APP_API_URL });
+const axiosInstance = axios.create({ baseURL: EXPO_PUBLIC_API_URL });
 
 axiosInstance.interceptors.response.use(
   (res) => res,

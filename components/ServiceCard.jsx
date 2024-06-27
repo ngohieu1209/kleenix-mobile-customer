@@ -3,10 +3,10 @@ import React from 'react'
 import { router } from 'expo-router'
 import { images } from '../constants'
 import { icons } from '../constants'
-import { REACT_APP_BASE_ICON_URL } from '@env'
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 
 const ServiceCard = ({ service: { id, name, icon } }) => {
-  const iconURL = `${REACT_APP_BASE_ICON_URL}/${icon}`
+  const iconURL = `${EXPO_PUBLIC_BASE_ICON_URL}/${icon}`
   
   return (
     <TouchableOpacity 

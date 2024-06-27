@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { REACT_APP_API_PROVINCE } from '@env'
+import { EXPO_PUBLIC_API_PROVINCE } from '@env'
 
 const apiKey = "zCDIlA5ytRuEe3YS9YrJlzAGjTkxsy4S6mJtq7ZpkGU";
 
@@ -25,7 +25,7 @@ const axiosInstanceAutoComplete = axios.create({
 })
 
 const axiosInstanceProvince = axios.create({
-  baseURL: REACT_APP_API_PROVINCE,
+  baseURL: EXPO_PUBLIC_API_PROVINCE,
   headers: {
     "Content-Type": "application/json",
   },

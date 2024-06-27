@@ -8,7 +8,13 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_HERE_API_KEY": "zCDIlA5ytRuEe3YS9YrJlzAGjTkxsy4S6mJtq7ZpkGU",
+        "EXPO_PUBLIC_API_PROVINCE": "https://vapi.vnappmob.com/api/province",
+        "EXPO_PUBLIC_API_URL": "https://buzzard-key-greatly.ngrok-free.app/api/v1",
+        "EXPO_PUBLIC_BASE_ICON_URL": "https://buzzard-key-greatly.ngrok-free.app"
+      }
     },
     "production": {}
   },

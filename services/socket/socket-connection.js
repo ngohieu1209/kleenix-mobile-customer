@@ -1,10 +1,10 @@
 import io from 'socket.io-client';
-import { REACT_APP_BASE_ICON_URL } from '@env'
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 
 let socket = null;
 
 export const connectWithSocketServer = (userId) => {
-  socket = io(REACT_APP_BASE_ICON_URL, { transports: ['websocket']});
+  socket = io(EXPO_PUBLIC_BASE_ICON_URL, { transports: ['websocket']});
   socket.auth = { customerId: userId };
 
   socket.on('connect', () => {

@@ -2,7 +2,7 @@ import { View, Text, FlatList, TouchableOpacity, ImageBackground } from 'react-n
 import React, { useState } from 'react'
 import { router } from 'expo-router'
 import * as Animatable from 'react-native-animatable'
-import { REACT_APP_BASE_ICON_URL } from '@env'
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 import PromotionModal from './PromotionModal'
 import { promotionApi } from '../services/api'
 import Toast from 'react-native-toast-message'
@@ -26,7 +26,7 @@ const zoomOut = {
 }
 
 const PromotionItem = ({ activeItem, item }) => {
-  const imageURL = `${REACT_APP_BASE_ICON_URL}/${item.image}`
+  const imageURL = `${EXPO_PUBLIC_BASE_ICON_URL}/${item.image}`
   
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)

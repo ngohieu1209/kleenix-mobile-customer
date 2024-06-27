@@ -7,7 +7,7 @@ import { fDateTime } from '../utils/format-time'
 import { fCurrency } from '../utils/format-currency';
 import { fAddress } from '../utils/format-address';
 import { addMinutes } from 'date-fns';
-import { REACT_APP_BASE_ICON_URL } from '@env';
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env';
 import { useGlobalContext } from '../context/GlobalProvider';
 
 const PromotionModal = ({ visible, onClose, onSelect, promotion }) => {
@@ -16,7 +16,7 @@ const PromotionModal = ({ visible, onClose, onSelect, promotion }) => {
   
   const { user } = useGlobalContext();
   
-  const imageURL = `${REACT_APP_BASE_ICON_URL}/${image}`
+  const imageURL = `${EXPO_PUBLIC_BASE_ICON_URL}/${image}`
   
   const handleClose = () => {
     onClose();

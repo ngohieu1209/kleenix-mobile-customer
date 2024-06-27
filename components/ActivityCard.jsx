@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { REACT_APP_BASE_ICON_URL } from '@env'
+import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 import { router } from 'expo-router'
 
 import { fCurrency } from '../utils/format-currency'
@@ -16,7 +16,7 @@ const ActivityCard = ({ activity }) => {
   const { id, createdAt, duration, note, dateTime, totalPrice, status, address, bookingPackage, paymentStatus } = activity;
   const { service } = bookingPackage[0].package;
   const { body: statusBody, color: statusColor } = colorStatus(status);
-  const iconURL = `${REACT_APP_BASE_ICON_URL}/${service.icon}`
+  const iconURL = `${EXPO_PUBLIC_BASE_ICON_URL}/${service.icon}`
   
   const submit = async () => {
     setIsLoading(true)

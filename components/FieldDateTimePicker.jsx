@@ -76,6 +76,7 @@ const FieldDateTimePicker = ({ title, value, mode, handleChangeDateTime, icon, o
           minimumDate={new Date()}
           maximumDate={addDays(new Date(), 7)}
           locale='vi-VN'
+          display='default'
         />
       )}
     </View>
