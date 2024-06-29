@@ -172,7 +172,7 @@ const Activities = () => {
           <View className='mt-12'>
             <EmptyState 
               title="Không tìm thấy dữ liệu"
-              subtitle="Vui lòng quay lại sau!"
+              subtitle="Chưa có đơn dịch vụ nào!"
             />
           </View>
         )}

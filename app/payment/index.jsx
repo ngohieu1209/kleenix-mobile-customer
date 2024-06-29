@@ -42,8 +42,10 @@ const Payment = () => {
         clientSecret,
       });
       if(presentSheet.error && presentSheet.error.code !== "Canceled") return Alert.alert(presentSheet.error.message)
-      const payment = await userApi.paymentSuccess(Number(amount));
-      updateUser({kPay: Number(payment)});
+      if(!presentSheet.paymentOption && presentSheet?.error?.code !== "Canceled") {
+        const payment = await userApi.paymentSuccess(Number(amount));
+        updateUser({kPay: Number(payment)});
+      }
       setAmount('');
       setIsPay(false);
     } catch (error) {

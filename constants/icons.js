@@ -36,6 +36,8 @@ import notification from "../assets/icons/notification.png";
 import bell from "../assets/icons/bell.png";
 import camera from "../assets/icons/camera.png";
 import gallery from "../assets/icons/gallery.png";
+import email from "../assets/icons/email.png";
+import telephoneCall from "../assets/icons/telephone-call.png";
 
 export default {
   play,
@@ -76,4 +78,6 @@ export default {
   bell,
   camera,
   gallery,
+  email,
+  telephoneCall,
 };

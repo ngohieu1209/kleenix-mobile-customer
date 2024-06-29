@@ -1,7 +1,8 @@
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
+import * as Linking from 'expo-linking';
 
 import { useGlobalContext } from '../../context/GlobalProvider'
 
@@ -9,11 +10,12 @@ import { icons } from '../../constants'
 import InfoBox from '../../components/InfoBox'
 
 import HorizontalLine from '../../components/HorizontalLine'
-import Toast from 'react-native-toast-message';
+import HelpDeskModal from '../../components/HelpDeskModal'
 
 const Profile = () => {
-  const iconBaseURL = `${EXPO_PUBLIC_BASE_ICON_URL}`
+  const iconBaseURL = `${process.env.EXPO_PUBLIC_BASE_ICON_URL}`
   const { logout, user } = useGlobalContext()
+  const [isModalVisible, setIsModalVisible] = useState(false)
   
   const handleLogout = async () => {
     try {
@@ -22,13 +24,6 @@ const Profile = () => {
     } catch (error) {
       console.log('logout-error', error.message)
     }
-  }
-  
-  const showToast = () => {
-    Toast.show({
-      type: 'success',
-      text1: 'Đăng ký thành công',
-    });
   }
   
   return (
@@ -142,7 +137,7 @@ const Profile = () => {
         <HorizontalLine />
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={showToast}
+          onPress={() => setIsModalVisible(true)}
         >
           <View className='w-full h-6 rounded-lg flex-row justify-between'>
             <View className='flex-row justify-center items-center space-x-2 ml-2'>
@@ -165,22 +160,41 @@ const Profile = () => {
         <HorizontalLine />
       </View>
       <View className='flex-row mt-4 justify-center space-x-10'>
-        <Image 
-          source={icons.facebook}
-          className='w-8 h-8'
-          resizeMode='contain'
-        />
-        <Image 
-          source={icons.tiktok}
-          className='w-9 h-9'
-          resizeMode='contain'
-        />
-        <Image 
-          source={icons.zalo}
-          className='w-9 h-9'
-          resizeMode='contain'
-        />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => Linking.openURL('https://www.facebook.com/')}
+        >
+          <Image 
+            source={icons.facebook}
+            className='w-8 h-8'
+            resizeMode='contain'
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => Linking.openURL('https://www.tiktok.com/')}
+        >
+          <Image 
+            source={icons.tiktok}
+            className='w-9 h-9'
+            resizeMode='contain'
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => Linking.openURL('https://www.zalo.me/')}
+        >
+          <Image 
+            source={icons.zalo}
+            className='w-9 h-9'
+            resizeMode='contain'
+          />
+        </TouchableOpacity>
       </View>
+      <HelpDeskModal 
+        visible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </SafeAreaView>
   )
 }

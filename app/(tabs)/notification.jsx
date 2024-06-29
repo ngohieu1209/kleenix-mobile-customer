@@ -76,7 +76,7 @@ const Notification = () => {
           <View className='mt-12'>
             <EmptyState 
               title="Không tìm thấy dữ liệu"
-              subtitle="Vui lòng quay lại sau!"
+              subtitle="Không có thông báo nào!"
             />
           </View>
         )}

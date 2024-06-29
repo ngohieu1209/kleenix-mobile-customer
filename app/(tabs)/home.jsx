@@ -58,7 +58,7 @@ const Home = () => {
           <ServiceCard service={item} key={index}/>
         )}
         // columnWrapperStyle={{ justifyContent: 'space-around' }}
-        columnWrapperStyle={{ gap: 35 }}
+        columnWrapperStyle={{ gap: 30 }}
         ListHeaderComponent={() => (
           <View className='flex my-6 px-4 space-y-6'>
             <View className='flex justify-between items-start flex-row mb-6'>

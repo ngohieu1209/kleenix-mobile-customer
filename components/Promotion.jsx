@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, ImageBackground } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { router } from 'expo-router'
 import * as Animatable from 'react-native-animatable'
@@ -6,6 +6,7 @@ import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
 import PromotionModal from './PromotionModal'
 import { promotionApi } from '../services/api'
 import Toast from 'react-native-toast-message'
+import { useGlobalContext } from '../context/GlobalProvider'
 
 const zoomIn = {
   0: {
@@ -28,6 +29,8 @@ const zoomOut = {
 const PromotionItem = ({ activeItem, item }) => {
   const imageURL = `${EXPO_PUBLIC_BASE_ICON_URL}/${item.image}`
   
+  const { user, updateUser } = useGlobalContext()
+  
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   
@@ -35,13 +38,12 @@ const PromotionItem = ({ activeItem, item }) => {
     setIsLoading(true)
     try {
       await promotionApi.claim(item.id);
+      updateUser({kPoints: Number(user.kPoints) - Number(item.point)});
       router.replace('/home')
+      ToastAndroid.show('Nhận khuyến mãi thành công', ToastAndroid.SHORT)
     } catch (error) {
       console.log('promotion-error', error)
-      Toast.show({
-        type: 'error',
-        text1: error.message || 'Có lỗi xảy ra khi nhận khuyến mãi',
-      });
+      ToastAndroid.show(error.message || 'Có lỗi xảy ra khi nhận khuyến mãi', ToastAndroid.SHORT)
     } finally {
       setIsLoading(false)
     }

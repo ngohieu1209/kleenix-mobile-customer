@@ -4,6 +4,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  ToastAndroid
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -35,7 +36,7 @@ import UsablePromotionModal from '../../components/UsablePromotionModal';
 import PaymentStatusModal from '../../components/PaymentStatusModal';
 import Toast from 'react-native-toast-message';
 import { fAddress } from '../../utils/format-address';
-import RNPickerSelect from 'react-native-picker-select';
+import { Picker } from '@react-native-picker/picker';
 
 const Service = () => {
   const iconBaseURL = `${EXPO_PUBLIC_BASE_ICON_URL}`;
@@ -72,7 +73,8 @@ const Service = () => {
   const [isVisibleModalPaymentStatus, setIsVisibleModalPaymentStatus] =
     useState(false);
   const [selectedPromotion, setSelectedPromotion] = useState(null);
-
+  const [selectedHour, setSelectedHour] = useState();
+  
   const hours = [...Array(15).keys()].map(hour => {
     // Cộng thêm 7 vì bạn muốn bắt đầu từ 7:00
     const adjustedHour = hour + 7;
@@ -205,11 +207,8 @@ const Service = () => {
       await bookingApi.newBooking(form);
       router.replace('/activities');
     } catch (error) {
-      console.log('booking-error', error);
-      Toast.show({
-        type: 'error',
-        text1: error.message || 'Đặt lịch thất bại. Vui lòng thử lại sau',
-      });
+      console.log('booking-error', error)
+      ToastAndroid.show(error.message || 'Đặt lịch thất bại. Vui lòng thử lại sau', ToastAndroid.LONG);
     } finally {
       setIsLoading(false);
     }
@@ -269,7 +268,7 @@ const Service = () => {
           <TouchableOpacity
             className='w-full py-4 px-4 bg-black-100 rounded-2xl justify-start items-start'
             activeOpacity={0.7}
-            onPress={() => router.push('address')}
+            onPress={() => router.replace('address')}
           >
             <Text className='text-base text-white font-pmedium'>
               {listAddress.length > 0
@@ -403,7 +402,7 @@ const Service = () => {
               <View
                 className={`w-full py-2 px-4 bg-black-100 rounded-2xl flex-row justify-between items-center space-x-4`}
               >
-                <RNPickerSelect
+                {/* <RNPickerSelect
                   onValueChange={(value) => setForm({ ...form, time: setHours(setMinutes(setSeconds(new Date, 0, 0), 0), value) })}
                   items={hours}
                   placeholder={{ label: '-- chọn thời gian --', value: null }}
@@ -420,7 +419,30 @@ const Service = () => {
                     },
                   }}
                   useNativeAndroidPickerStyle={false} // Đây là dòng quan trọng để disable style mặc định của Android và sử dụng style custom
-                />
+                /> */}
+                <Picker
+                  selectedValue={selectedHour}
+                  onValueChange={(itemValue) => {
+                      setForm({ ...form, time: setHours(setMinutes(setSeconds(new Date, 0, 0), 0), itemValue) })
+                      setSelectedHour(itemValue);
+                    }
+                  }
+                  placeholder='-- chọn thời gian --'
+                  mode='dropdown'
+                  dropdownIconColor={'#1e1e2d'}
+                  style={{
+                    width: '80%',
+                    fontSize: 16,
+                    fontFamily: 'BeVietnamPro-SemiBold',
+                    paddingHorizontal: 10,
+                    paddingVertical: 8,
+                    color: 'white',
+                  }}
+                >
+                  {hours.map((hour, index) => (
+                    <Picker.Item key={index} label={hour.label} value={hour.value} />
+                  ))}
+                </Picker>
                   <Image
                     source={icons.clock}
                     className='w-6 h-6'

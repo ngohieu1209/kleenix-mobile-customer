@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { icons } from '../constants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HorizontalLine from './HorizontalLine'
+import EmptyState from './EmptyState'
 import { fDateTime } from '../utils/format-time'
 import { fCurrency } from '../utils/format-currency';
 import { fAddress } from '../utils/format-address';
@@ -14,6 +15,7 @@ const UsablePromotionModal = ({ visible, onClose, onSelect, promotions }) => {
   const handleClose = () => {
     onClose();
   };
+  
   return (
     <Modal animationType='slide' visible={visible}>
       <SafeAreaView className='flex-1 bg-primary h-full'>
@@ -30,6 +32,12 @@ const UsablePromotionModal = ({ visible, onClose, onSelect, promotions }) => {
           </View>
         </View>
         <ScrollView className='px-4 my-4'>
+          {promotions.length === 0 && (
+            <EmptyState 
+              title="Không tìm thấy dữ liệu"
+              subtitle="Chưa có khuyến mãi nào!"
+            />
+          )}
           {promotions.map((item) => {
             const { id, name, discount, startTime, endTime } = item.promotion;
             return (

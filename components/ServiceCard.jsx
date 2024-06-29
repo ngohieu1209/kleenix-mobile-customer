@@ -4,6 +4,7 @@ import { router } from 'expo-router'
 import { images } from '../constants'
 import { icons } from '../constants'
 import { EXPO_PUBLIC_BASE_ICON_URL } from '@env'
+import { fShortenString } from '../utils/format-string'
 
 const ServiceCard = ({ service: { id, name, icon } }) => {
   const iconURL = `${EXPO_PUBLIC_BASE_ICON_URL}/${icon}`
@@ -27,7 +28,7 @@ const ServiceCard = ({ service: { id, name, icon } }) => {
       
       <View className='pt-2'>
         <Text className='text-white font-psemibold text-xs' numberOfLines={1}>
-          {name}
+          {fShortenString(name)}
         </Text>
       </View>
 {/*       

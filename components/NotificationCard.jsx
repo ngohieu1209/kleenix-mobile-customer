@@ -2,8 +2,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { router } from 'expo-router'
 
-import { fCurrency } from '../utils/format-currency'
-import { fMinutesToHours, fDateTime, fDate } from '../utils/format-time'
+import { fToNow } from '../utils/format-time'
 import { getSocketInstance } from '../services/socket/socket-connection'
 import { NOTIFICATION_TYPE } from '../constants/notification-type'
 
@@ -38,7 +37,7 @@ const NotificationCard = ({ notification }) => {
         </View>
         <View className='space-y-1 mt-2'>
           <Text className='text-white text-sm'>{body}</Text>
-          <Text style={{ color: '#FCDC2A' }} className={`text-sm`}>{fDate(createdAt, 'Pp')}</Text>
+          <Text style={{ color: '#FCDC2A' }} className={`text-sm`}>{fToNow(createdAt)}</Text>
         </View>
       </TouchableOpacity>
     </View>
