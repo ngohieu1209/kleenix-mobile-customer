@@ -9,6 +9,7 @@ import { fAddress } from '../utils/format-address';
 import { addMinutes } from 'date-fns';
 import FeedbackModal from './FeedbackModal';
 import { feedbackApi } from '../services/api';
+import { fCodeBooking } from '../utils/format-string';
 
 const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +47,7 @@ const BookingModal = ({ visible, onClose, onSelect, service, activity }) => {
           <View className='flex-row'>
             <View className='flex-1'>
               <Text className='text-white font-pmedium text-base'>
-                Chi tiết lịch đặt
+                Chi tiết lịch đặt: #{fCodeBooking(id)}
               </Text>
             </View>
             <TouchableOpacity onPress={handleClose}>
