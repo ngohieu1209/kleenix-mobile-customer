@@ -43,6 +43,7 @@ const Activities = () => {
   const [status, setStatus] = useState('PENDING');
   const [isFilter, setIsFilter] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedTab, setSelectedTab] = useState();
   const { authenticated } = useGlobalContext()
 
   const { data: listActivity, isLoading, refetch } = useFetchData(authenticated ? bookingApi.getListBooking(status, startDate, endDate) : null);
